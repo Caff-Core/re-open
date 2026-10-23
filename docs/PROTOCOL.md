@@ -2,23 +2,23 @@
 
 ## Channels and authority
 
-| Channel | Transport | Authority |
-| --- | --- | --- |
-| React to Tauri | Tauri commands/events | Typed UI requests |
-| Desktop shell to agent | Current-user Unix socket `desktop.sock` | Preview, settings, capture, approved restore |
-| Extension to native host | Browser Native Messaging | Browser capture and browser restore acknowledgements |
-| Native host to agent | Separate current-user Unix socket `browser.sock` | Same browser-only operations |
+| Channel                  | Transport                                        | Authority                                            |
+| ------------------------ | ------------------------------------------------ | ---------------------------------------------------- |
+| React to Tauri           | Tauri commands/events                            | Typed UI requests                                    |
+| Desktop shell to agent   | Current-user Unix socket `desktop.sock`          | Preview, settings, capture, approved restore         |
+| Extension to native host | Browser Native Messaging                         | Browser capture and browser restore acknowledgements |
+| Native host to agent     | Separate current-user Unix socket `browser.sock` | Same browser-only operations                         |
 
 Authenticate role and installation context from the endpoint and credentials; do not trust a JSON `role` value. Use distinct endpoints, explicit operation allowlists and installation credentials protected with user-level access. Same-user malware remains outside the protection boundary.
 
 ## Local sockets on Linux
 
-| Path | Mode | Purpose |
-| --- | --- | --- |
-| `$XDG_RUNTIME_DIR/reopen/` | `0700`, owned by the user | Runtime directory; created by the agent |
-| `$XDG_RUNTIME_DIR/reopen/agent.lock` | `0600` | Agent singleton lock |
-| `$XDG_RUNTIME_DIR/reopen/desktop.sock` | `0600` | Desktop-role endpoint |
-| `$XDG_RUNTIME_DIR/reopen/browser.sock` | `0600` | Browser-role endpoint used only by `reopen-host` |
+| Path                                   | Mode                      | Purpose                                          |
+| -------------------------------------- | ------------------------- | ------------------------------------------------ |
+| `$XDG_RUNTIME_DIR/reopen/`             | `0700`, owned by the user | Runtime directory; created by the agent          |
+| `$XDG_RUNTIME_DIR/reopen/agent.lock`   | `0600`                    | Agent singleton lock                             |
+| `$XDG_RUNTIME_DIR/reopen/desktop.sock` | `0600`                    | Desktop-role endpoint                            |
+| `$XDG_RUNTIME_DIR/reopen/browser.sock` | `0600`                    | Browser-role endpoint used only by `reopen-host` |
 
 Development uses `$XDG_RUNTIME_DIR/reopen-dev/` with the same names. If `XDG_RUNTIME_DIR` is unset, the agent refuses to start its endpoints; it never falls back to a shared directory such as `/tmp`. Refuse to use an existing directory or socket that is not owned by the current UID or has broader permissions. Remove a stale socket only while holding the singleton lock.
 
@@ -48,13 +48,13 @@ The handshake establishes protocol version, source identity, lease/epoch and sup
 
 ## Operations
 
-| Desktop operations | Browser operations |
-| --- | --- |
-| `status.get`, `settings.get`, `settings.update` | `browser.hello`, `browser.heartbeat` |
-| `capture.request`, `capture.pause`, `capture.resume` | `browser.capture.begin`, `.chunk`, `.commit` |
-| `checkpoints.list`, `checkpoints.get` | `browser.restore.poll`, `.ack` |
-| `recovery.dismiss`, `checkpoint.pin`, `checkpoint.unpin` | `browser.disconnect` |
-| `restore.preview`, `restore.start`, `restore.cancel` | No desktop launch or generic execution |
+| Desktop operations                                       | Browser operations                           |
+| -------------------------------------------------------- | -------------------------------------------- |
+| `status.get`, `settings.get`, `settings.update`          | `browser.hello`, `browser.heartbeat`         |
+| `capture.request`, `capture.pause`, `capture.resume`     | `browser.capture.begin`, `.chunk`, `.commit` |
+| `checkpoints.list`, `checkpoints.get`                    | `browser.restore.poll`, `.ack`               |
+| `recovery.dismiss`, `checkpoint.pin`, `checkpoint.unpin` | `browser.disconnect`                         |
+| `restore.preview`, `restore.start`, `restore.cancel`     | No desktop launch or generic execution       |
 
 Desktop `restore.preview` produces a plan ID, resource selections, policy warnings and expiry. `restore.start` accepts that plan ID and a request ID. Changes to exclusions, resources or source identity invalidate stale plans. Recheck path existence and memory at execution time. Cancelling stops future actions, not apps already launched.
 

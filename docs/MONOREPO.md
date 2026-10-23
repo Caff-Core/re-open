@@ -60,18 +60,18 @@ React with TypeScript strict mode and Vite. Tailwind CSS 4, shadcn/ui and ReUI w
 
 Implement these scripts in Phase 0 (tasks 0.5–0.10); scripts for later phases fail with a message naming the phase that implements them:
 
-| Command | Required behavior |
-| --- | --- |
-| `pnpm dev:desktop` | Build/locate Rust agent and launch Tauri development mode |
-| `pnpm dev:extension` | Watch-build unpacked browser extension |
-| `pnpm dev:agent` | Run the Rust agent against an isolated development data directory |
-| `pnpm contracts:generate` | Regenerate Rust and TypeScript wire types |
-| `pnpm contracts:check` | Fail if committed generated outputs differ |
-| `pnpm lint` | Lint all TypeScript and frontend code |
-| `pnpm typecheck` | Check desktop, extension and shared packages |
-| `pnpm test` | Run TypeScript unit tests, initially Vitest |
-| `pnpm build` | Build frontend packages and browser artifacts; no installer implied |
-| `pnpm package:linux` | Build release Rust binaries and the RPM and AppImage desktop bundles (Phase 6) |
+| Command                   | Required behavior                                                              |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| `pnpm dev:desktop`        | Build/locate Rust agent and launch Tauri development mode                      |
+| `pnpm dev:extension`      | Watch-build unpacked browser extension                                         |
+| `pnpm dev:agent`          | Run the Rust agent against an isolated development data directory              |
+| `pnpm contracts:generate` | Regenerate Rust and TypeScript wire types                                      |
+| `pnpm contracts:check`    | Fail if committed generated outputs differ                                     |
+| `pnpm lint`               | Lint all TypeScript and frontend code                                          |
+| `pnpm typecheck`          | Check desktop, extension and shared packages                                   |
+| `pnpm test`               | Run TypeScript unit tests, initially Vitest                                    |
+| `pnpm build`              | Build frontend packages and browser artifacts; no installer implied            |
+| `pnpm package:linux`      | Build release Rust binaries and the RPM and AppImage desktop bundles (Phase 6) |
 
 `pnpm package:windows` is deferred to the Windows adapter (Phase 7) and is not defined until then. Use Cargo commands directly for Rust checks. Platform-specific scripts must fail with useful messages on unsupported hosts. Development and test data directories must never reuse production checkpoints, pairing identities, sockets or native-host registrations.
 

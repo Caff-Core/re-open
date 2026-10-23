@@ -1,7 +1,7 @@
 name: Bug
 description: Something behaves incorrectly
-title: "fix: "
-labels: ["type:fix"]
+title: 'fix: '
+labels: ['type:fix']
 body:
   - type: textarea
     id: what
@@ -20,7 +20,7 @@ body:
     id: env
     attributes:
       label: Environment
-      placeholder: "Fedora 44, GNOME 50 Wayland, Brave 1.x, Re-Open commit abc123"
+      placeholder: 'Fedora 44, GNOME 50 Wayland, Brave 1.x, Re-Open commit abc123'
   - type: textarea
     id: logs
     attributes:

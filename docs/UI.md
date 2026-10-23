@@ -8,13 +8,13 @@ Use shadcn/ui for buttons, dialogs, menus, checkboxes, tooltips and basic form c
 
 ## Screens
 
-| Screen | Contents |
-| --- | --- |
-| Overview | Capture status, last saved time, recovery candidate, memory status, Save now |
-| Checkpoints | Timestamp, session, completeness, source freshness, pins and preview |
-| Recovery preview | App/resource tree, browser windows/tabs, selection and capability warnings |
-| Restore progress | Current action, queue, memory pause, cancel and per-item outcomes |
-| Settings | Startup, interval, exclusions, retention, paired browsers and privacy controls |
+| Screen           | Contents                                                                       |
+| ---------------- | ------------------------------------------------------------------------------ |
+| Overview         | Capture status, last saved time, recovery candidate, memory status, Save now   |
+| Checkpoints      | Timestamp, session, completeness, source freshness, pins and preview           |
+| Recovery preview | App/resource tree, browser windows/tabs, selection and capability warnings     |
+| Restore progress | Current action, queue, memory pause, cancel and per-item outcomes              |
+| Settings         | Startup, interval, exclusions, retention, paired browsers and privacy controls |
 
 Named workspaces are later functionality. The schema begins with a Default workspace so this can be added without rewriting historical identity.
 

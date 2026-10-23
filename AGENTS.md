@@ -76,6 +76,7 @@ cargo test --workspace
 
 Run native Linux integration and package checks on the Fedora 44 / GNOME Wayland reference machine; CI containers cannot exercise a desktop session, real browser profiles or the Secret Service. Cross-platform fixture tests are not substitutes for native validation.
 
+<!-- prettier-ignore-start -->
 <!-- BEGIN:reui-agent-rules -->
 ## ReUI design rules (every UI edit, follow-ups included)
 
@@ -90,3 +91,4 @@ This project uses an existing design system: ReUI on shadcn/ui. Keep its look. G
 
 Managed by the ReUI installer. Edits between the markers are replaced on the next run.
 <!-- END:reui-agent-rules -->
+<!-- prettier-ignore-end -->
