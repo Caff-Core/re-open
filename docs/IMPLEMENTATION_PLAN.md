@@ -157,11 +157,11 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.2 Storage and migrations — `feat` · [#12](https://github.com/Caff-Core/re-open/issues/12)
 
-- [ ] `crates/storage` with rusqlite; foreign keys, WAL, `synchronous=FULL`, bounded busy timeout
-- [ ] Numbered migration runner with `schema_migrations`; schema v1 tables from `docs/DATA_MODEL.md`; default workspace
-- [ ] Refuse writes on a newer schema; never create an empty replacement on corruption
-- [ ] Verified backup via the SQLite backup API before destructive migrations
-- [ ] Migration tests against prior versions
+- [x] `crates/storage` with rusqlite; foreign keys, WAL, `synchronous=FULL`, bounded busy timeout
+- [x] Numbered migration runner with `schema_migrations`; schema v1 tables from `docs/DATA_MODEL.md`; default workspace
+- [x] Refuse writes on a newer schema; never create an empty replacement on corruption
+- [x] Verified backup via the SQLite backup API before destructive migrations
+- [x] Migration tests against prior versions
 
 ### 1.3 Single bounded writer — `feat` · [#13](https://github.com/Caff-Core/re-open/issues/13)
 
