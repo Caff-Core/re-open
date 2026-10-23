@@ -171,9 +171,9 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.4 Sessions and recovery protection — `feat` · [#14](https://github.com/Caff-Core/re-open/issues/14)
 
-- [ ] Session records with clean-exit marker
-- [ ] Startup transaction creates the pending recovery candidate and pin before capture starts
-- [ ] Multiple unresolved candidates; dismiss and resolve release only their own pin
+- [x] Session records with clean-exit marker
+- [x] Startup transaction creates the pending recovery candidate and pin before capture starts
+- [x] Multiple unresolved candidates; dismiss and resolve release only their own pin
 
 ### 1.5 Capture scheduler and fake provider — `feat` · [#15](https://github.com/Caff-Core/re-open/issues/15)
 

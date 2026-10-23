@@ -13,6 +13,8 @@ pub enum StoreError {
     },
     /// The migration list or recorded version is inconsistent.
     InvalidSchemaVersion,
+    /// The referenced record does not exist or is not in the expected state.
+    NotFound,
     /// Data failed validation before any write. `detail` names fields, never values.
     InvalidData {
         detail: String,
@@ -36,6 +38,7 @@ impl fmt::Display for StoreError {
             Self::InvalidSchemaVersion => {
                 f.write_str("the checkpoint database schema version is invalid")
             }
+            Self::NotFound => f.write_str("the requested record was not found"),
             Self::InvalidData { detail } => write!(f, "invalid data: {detail}"),
             Self::WalUnavailable => f.write_str("write-ahead logging could not be enabled"),
             Self::BackupFailed => {
