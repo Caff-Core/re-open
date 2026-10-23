@@ -13,11 +13,13 @@ use rusqlite::{Connection, OpenFlags, params};
 mod checkpoint;
 mod error;
 pub mod migrate;
+mod session;
 pub mod writer;
 
 pub use checkpoint::{CommitOutcome, NewCheckpoint};
 pub use error::StoreError;
 pub use migrate::{MIGRATIONS, Migration};
+pub use session::{CandidateDisposition, PreviousSession, RecoveryCandidate, SessionStart};
 pub use writer::{WriterError, WriterHandle};
 
 /// How long a statement waits on a lock before failing.

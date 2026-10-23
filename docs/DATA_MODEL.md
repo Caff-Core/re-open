@@ -61,7 +61,7 @@ Browser chunks are temporary staging, never recovery checkpoints. Persist the fu
 
 ## Recovery protection
 
-At startup, in one transaction, identify the previous session's latest useful checkpoint, create a pending recovery candidate and add a candidate pin before new captures can run. Prefer complete checkpoints with supported resources; if only partial history exists, offer it with warnings. A verified all-empty capture remains valid history but is not automatically preferred over useful prior work.
+At startup, in one transaction, identify the previous session's latest useful checkpoint, create a pending recovery candidate and add a candidate pin before new captures can run. Prefer complete checkpoints with supported resources; if only partial history exists, offer it with warnings. A verified all-empty capture remains valid history but is not automatically preferred over useful prior work. Concretely, the candidate is the previous session's newest checkpoint that has at least one resource, preferring `complete` over `partial`; a session with only empty captures adds no candidate, and earlier pending candidates stay protected. Closed candidate rows remain as history, so retention removes them explicitly before deleting their checkpoint.
 
 Multiple unresolved candidates can exist across repeated restarts. Retention never deletes any referenced pending candidate or user-pinned checkpoint. Dismissing or successfully resolving a candidate releases only that candidate's pin. A failed, cancelled or uncertain restoration leaves protection in place. Starting a restore also pins its checkpoint until its journal is resolved.
 
