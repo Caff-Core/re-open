@@ -37,6 +37,11 @@ export default defineConfig(
     },
   },
   {
+    // Installed verbatim by the shadcn CLI; keep them diff-free against the registry.
+    files: ['packages/ui/src/components/**'],
+    rules: { 'import-x/order': 'off' },
+  },
+  {
     files: ['**/*.{tsx,jsx}'],
     ...reactHooks.configs.flat['recommended-latest'],
   },

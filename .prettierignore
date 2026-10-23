@@ -11,3 +11,6 @@ apps/desktop/src-tauri/gen
 .opencode
 .gemini
 .claude/worktrees
+
+# shadcn/ReUI components are installed verbatim by the shadcn CLI
+packages/ui/src/components

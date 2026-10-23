@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "reui": {
-      "url": "https://mcp.reui.io/api/mcp"
+      "url": "https://mcp.reui.io/api/mcp?style=base-nova"
     }
   }
 }

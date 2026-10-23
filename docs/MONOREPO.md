@@ -35,7 +35,7 @@ This is a target layout. Only Markdown files exist in the initial pack.
     native-host/              # Browser Native Messaging bridge
   packages/
     contracts/                # Canonical JSON Schemas + generated TypeScript
-    ui/                       # Shared shadcn/ReUI primitives and tokens
+    ui/                       # Shared shadcn/ReUI primitives and tokens (ADR-012)
   fixtures/
     protocol/
     capture/
