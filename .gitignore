@@ -49,5 +49,8 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Agent-local settings
+# Agent-local settings and state
 .claude/settings.local.json
+.claude/worktrees/
+agentdb.rvf
+agentdb.rvf.lock

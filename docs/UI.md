@@ -32,4 +32,6 @@ Named workspaces are later functionality. The schema begins with a Default works
 
 Keyboard navigation, visible focus, accessible names, reduced motion, clear empty states and readable dark/light themes. Virtualize large tab/resource lists where needed. Avoid animations that obscure state transitions. Do not continuously chart every process or keep the webview alive solely for memory sampling.
 
-The tray offers Open, Save now, Pause/Resume capture and Quit. Closing the interface keeps the background agent active. “Quit background agent” is a separate explicit action with a clear consequence.
+The tray offers Open, Save now, Pause/Resume capture and Quit.
+
+**GNOME tray limitation:** stock GNOME Shell has no system tray. Tauri's Linux tray uses AppIndicator/StatusNotifierItem, which appears only when the user has installed an AppIndicator extension (for example Fedora's `gnome-shell-extension-appindicator`). Do not require it. Task 4.1 decides the fallback (background-app portal, persistent notification or window-only mode) and records an ADR; until then, every tray action must also be reachable from the desktop window, and capture status must never depend on the tray being visible. Closing the interface keeps the background agent active. “Quit background agent” is a separate explicit action with a clear consequence.

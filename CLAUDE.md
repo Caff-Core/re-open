@@ -4,4 +4,4 @@ Read and follow [AGENTS.md](AGENTS.md). It is the canonical coding-agent instruc
 
 Then read [README.md](README.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md). Read the remaining documents as required by the task.
 
-Start with milestone 0 unless the user specifies another task. This pack is documentation only; there is no application scaffold yet.
+Work on the next open task in the implementation plan unless the user specifies another. Check the plan for which scaffolding exists.

@@ -9,10 +9,14 @@
 | Contract fixtures | Rust/TypeScript agreement, bounds, versions, chunks, duplicate acknowledgements |
 | Extension unit | Event coalescing, private exclusion, reconnect, worker state recovery |
 | React component | Selection stability, partial/stale indicators, cancellation and error rendering |
-| Native Windows integration | Visible-app discovery, current-user pipes, process launch and registration |
+| Native Linux integration | GNOME Wayland app discovery, current-user sockets and `SO_PEERCRED`, desktop-entry launch, Secret Service, host-manifest and autostart registration |
 | End-to-end | Capture, terminate processes, relaunch, select, restore and report |
 
-Use Rust's test framework, temporary databases, fake clocks/providers and Vitest for TypeScript. Use browser/UI automation for flows it can actually exercise. Browser extension and Windows native behavior require dedicated integration runs; a web-only mock cannot certify them.
+Use Rust's test framework, temporary databases, fake clocks/providers and Vitest for TypeScript. Use browser/UI automation for flows it can actually exercise. Browser extension and Linux native behavior require dedicated integration runs; a web-only mock cannot certify them.
+
+## Reference machine
+
+Native validation runs on the development machine: Fedora 44 x86_64, GNOME 50 on Wayland, 15 GiB RAM, Brave and Firefox from native RPMs. Record the kernel, GNOME Shell, Brave and Firefox versions with each native test run and each performance measurement. Results from CI containers or other desktops do not substitute for this machine.
 
 ## Critical failure cases
 
@@ -43,12 +47,12 @@ Measure agent, native host, tray shell and open UI separately, then total idle f
 
 ## Continuous integration
 
-Run schema drift, formatting, linting, TypeScript checks and fixture/unit tests on each change. Run Cargo workspace checks on Windows; portable core crates can also run on Linux. Build the unpacked extension artifact. Add native integration and installer validation on Windows runners or a documented local test machine. Block release if protocol/schema compatibility or critical durability cases fail.
+Run schema drift, formatting, linting, TypeScript checks and fixture/unit tests on each change. CI runs on GitHub-hosted Linux runners (`ubuntu-latest`) with the Tauri WebKitGTK system dependencies installed; Cargo workspace checks, including `platform-linux`, run there. Build the unpacked extension artifacts. CI cannot exercise a GNOME Wayland session, a real browser profile or the Secret Service, so native integration and package validation run on the reference machine and are recorded in the relevant issue. Windows and macOS runners are added only with their Phase 7 adapters. Block release if protocol/schema compatibility or critical durability cases fail.
 
 ## Release artifacts and gates
 
-Desktop installer bundles target-specific agent and native-host binaries. Produce separate Chrome/Edge extension packages and matching allowlisted IDs. Record application version, protocol version, database schema version and extension compatibility matrix. Never publish credentials, development pairing data or personal checkpoints.
+Linux desktop packages (RPM and AppImage) bundle target-specific agent and native-host binaries. Produce a Chromium extension package for Brave and an AMO-signed Firefox XPI, each with matching allowlisted IDs. Record application version, protocol version, database schema version and extension compatibility matrix. Never publish credentials, development pairing data or personal checkpoints.
 
-Gate release on clean install, native-host registration, login startup, no-elevation operation, offline restore, upgrade with retained history and uninstall. Uninstall asks whether history should be retained; it removes only this app's startup/host entries. A browser-store package and a locally loaded development extension have different identity requirements.
+Gate release on clean install in a fresh user account, native-host registration, login startup, no-root operation, offline restore, upgrade with retained history and uninstall. Uninstall asks whether history should be retained; it removes only this app's startup/host entries. A browser-store package and a locally loaded development extension have different identity requirements.
 
 Hardware power-cut testing belongs on disposable data/devices. Automated process termination verifies transaction behavior but is not proof against every real storage failure.

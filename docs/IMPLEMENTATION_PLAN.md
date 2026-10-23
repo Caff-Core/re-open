@@ -59,15 +59,15 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [x] Replace every `#TBD` in this file with the created issue numbers
 
 ### 0.3 Retarget documentation to Linux/GNOME first — `docs` · [#3](https://github.com/Caff-Core/re-open/issues/3)
-- [ ] `README.md` and `AGENTS.md`: product name Re-Open, Linux/GNOME + Brave first, Windows as a later adapter
-- [ ] `docs/DECISIONS.md`: ADR-008 marked superseded; add ADR-009 Linux/GNOME/Brave first, ADR-010 name and identifiers, ADR-011 schema generator, ADR-012 shadcn primitive family and ReUI style, ADR-013 MIT licence
-- [ ] `docs/ARCHITECTURE.md` and `docs/PROTOCOL.md`: Unix sockets, `SO_PEERCRED`, socket paths; named pipes moved to the Windows adapter section
-- [ ] `docs/DATA_MODEL.md`: XDG data/state/runtime directories; isolated development directory
-- [ ] `docs/BROWSER_EXTENSION.md`: Brave and Firefox host-manifest locations and manifest differences; Flatpak browsers out of scope
-- [ ] `docs/SECURITY.md`: Secret Service (libsecret) for pairing credentials on Linux
-- [ ] `docs/MONOREPO.md`: `platform-linux` crate; `package:linux` script; `package:windows` deferred
-- [ ] `docs/TESTING_RELEASE.md`: Linux CI runners, native validation on the Fedora reference machine
-- [ ] `docs/UI.md`: GNOME tray limitation noted (see 4.1)
+- [x] `README.md` and `AGENTS.md`: product name Re-Open, Linux/GNOME + Brave first, Windows as a later adapter
+- [x] `docs/DECISIONS.md`: ADR-008 marked superseded; add ADR-009 Linux/GNOME/Brave first, ADR-010 name and identifiers, ADR-011 schema generator, ADR-012 shadcn primitive family and ReUI style, ADR-013 MIT licence
+- [x] `docs/ARCHITECTURE.md` and `docs/PROTOCOL.md`: Unix sockets, `SO_PEERCRED`, socket paths; named pipes moved to the Windows adapter section
+- [x] `docs/DATA_MODEL.md`: XDG data/state/runtime directories; isolated development directory
+- [x] `docs/BROWSER_EXTENSION.md`: Brave and Firefox host-manifest locations and manifest differences; Flatpak browsers out of scope
+- [x] `docs/SECURITY.md`: Secret Service (libsecret) for pairing credentials on Linux
+- [x] `docs/MONOREPO.md`: `platform-linux` crate; `package:linux` script; `package:windows` deferred
+- [x] `docs/TESTING_RELEASE.md`: Linux CI runners, native validation on the Fedora reference machine
+- [x] `docs/UI.md`: GNOME tray limitation noted (see 4.1)
 
 ### 0.4 Toolchain pinning — `chore` · [#4](https://github.com/Caff-Core/re-open/issues/4)
 - [ ] Verify current stable versions and compatibility of Node, pnpm, Rust, Tauri 2, React, Vite, Tailwind CSS 4, shadcn CLI and ReUI against official documentation; record the result in `docs/DECISIONS.md`
@@ -123,7 +123,7 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [ ] Mark both jobs as required status checks on `main`
 
 ### Phase 0 exit criteria
-- [ ] Target matrix documented and ADRs 009–013 recorded
+- [x] Target matrix documented and ADRs 009–013 recorded
 - [ ] Lockfiles committed; no unbounded dependency versions
 - [ ] Every root command in `docs/MONOREPO.md` exists and either works or fails with a useful phase message
 - [ ] Core crate, contracts fixtures and frontend smoke checks pass locally and in CI

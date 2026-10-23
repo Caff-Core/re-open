@@ -2,7 +2,7 @@
 
 ## First target and permissions
 
-Build Chromium Manifest V3 for Chrome and Edge. Use a service worker and a small popup; no content scripts. Request only `tabs`, `storage`, `nativeMessaging` and `alarms` when used for reconciliation. No broad host permissions, browsing history, cookies or debugger access. Explain that `tabs` permits reading sensitive tab metadata.
+Build Manifest V3 for Brave first (native RPM install on Fedora), then Firefox from the same source. Chrome, Chromium and Edge share the Chromium build but are later targets (Phase 7). Flatpak and Snap browsers are out of scope: their sandboxes do not spawn host-side native messaging binaries without extra portal work (task 7.3). Use a background worker and a small popup; no content scripts. Request only `tabs`, `storage`, `nativeMessaging` and `alarms` when used for reconciliation. No broad host permissions, browsing history, cookies or debugger access. Explain that `tabs` permits reading sensitive tab metadata.
 
 Private/incognito capture is unsupported and excluded at every stage, even if a user manually enables the extension in that mode. The agent validates incoming private flags as well; private records are rejected rather than persisted.
 
@@ -16,7 +16,7 @@ Store only the latest pending browser capture locally, replace superseded data, 
 
 ## Profile identity and pairing
 
-Generate a source UUID in extension-local storage for each browser profile. This labels the source, not a discovered filesystem profile path. Browser profile labels are user editable. Never guess profiles from process names or Chromium installation directories.
+Generate a source UUID in extension-local storage for each browser profile. This labels the source, not a discovered filesystem profile path. Browser profile labels are user editable. Never guess profiles from process names or browser configuration directories.
 
 First connection requires enrollment shown in the desktop UI. The native host verifies the caller's extension origin against the installed manifest allowlist and startup origin argument. Bind enrollment credentials to browser family, source UUID and installation. Protect credentials in per-user storage; do not log them. Unknown sources can request pairing but cannot submit durable captures or receive restore jobs until approved.
 
@@ -26,7 +26,21 @@ If a cloned profile presents a duplicate source UUID, detect conflicting active 
 
 The browser starts the Rust native host when the extension connects. The host forwards validated, bounded frames to the agent's browser-only endpoint. It does not own history, launch arbitrary applications or keep the background agent alive. On host/agent failure the extension shows disconnected and retries with bounded backoff.
 
-Native-host registration is per user. Use separate explicit allowed extension IDs for local development, Chrome distribution and Edge distribution. Development registration must not replace production. Installer repairs and uninstall remove only entries owned by this application.
+Native-host registration is per user. Use separate explicit allowed extension IDs for local development and each distribution channel. Development registration uses its own host name (`com.caffcore.reopen.dev.host`) and must not replace production. Installer repairs and uninstall remove only entries owned by this application.
+
+## Browser differences
+
+| | Brave (first) | Firefox (second) |
+| --- | --- | --- |
+| Per-user host manifest | `~/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts/com.caffcore.reopen.host.json` | `~/.mozilla/native-messaging-hosts/com.caffcore.reopen.host.json` |
+| Caller allowlist field | `allowed_origins`: `chrome-extension://<id>/` entries | `allowed_extensions`: add-on IDs |
+| Host arguments at start | Caller origin | Path to the host manifest, then the add-on ID |
+| Extension identity | ID derived from the packaging key; pin the development key so the ID is stable | `browser_specific_settings.gecko.id` in the manifest |
+| Background context | `background.service_worker` | `background.scripts` (event page); Firefox does not run MV3 service workers |
+| API namespace | `chrome.*` | `browser.*` (promise-based); `chrome.*` partly aliased |
+| Distribution | Chrome Web Store compatible package, or unpacked for development | AMO-signed XPI (unlisted); unsigned only in development profiles |
+
+The host `path` must be absolute. Both manifests point at the same `reopen-host` binary; the host identifies the browser family from its start arguments and verifies the caller against the allowlist before forwarding anything. Isolate API differences in one small browser-API module rather than branching throughout the extension. Verify these paths and fields against current browser documentation when implementing tasks 3.7 and 3.9.
 
 ## Restore behavior
 

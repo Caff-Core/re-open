@@ -22,14 +22,16 @@ This is a target layout. Only Markdown files exist in the initial pack.
     extension/
       src/background/         # Manifest V3 event handling
       src/popup/              # Minimal status and pause controls
-      manifests/              # Chrome/Edge build variations
+      manifests/              # Chromium (Brave) and Firefox manifest variants
+    gnome-shell-extension/    # Only if selected by spike 2.1
   crates/
     agent/                    # Background binary
     core/                     # Domain types and policies
     storage/                  # rusqlite and migrations
     protocol/                 # Generated wire types and validation
     platform/                 # Traits and fake adapter
-    platform-windows/         # Windows API integration
+    platform-linux/           # Linux/GNOME integration (first target)
+    platform-windows/         # Windows API integration (Phase 7; not created until then)
     native-host/              # Browser Native Messaging bridge
   packages/
     contracts/                # Canonical JSON Schemas + generated TypeScript
@@ -44,11 +46,11 @@ This is a target layout. Only Markdown files exist in the initial pack.
 
 ## Dependency rules
 
-Use one root pnpm workspace for `apps/*` and `packages/*`, and one root Cargo workspace for `crates/*` plus `apps/desktop/src-tauri`. Core contains no Tauri or Windows dependencies. Storage depends on core; platform implementations depend on platform/core; the agent composes everything. Native host depends on protocol and IPC client utilities, not storage or launch adapters.
+Use one root pnpm workspace for `apps/*` and `packages/*`, and one root Cargo workspace for `crates/*` plus `apps/desktop/src-tauri`. Core contains no Tauri or OS-specific dependencies. Platform crates compile only on their target OS (`cfg(target_os = ...)`); the agent selects one at build time and uses the fake adapter in tests. Only platform crates may override the workspace `unsafe_code = "forbid"` lint, with a safety comment on every `unsafe` block. Storage depends on core; platform implementations depend on platform/core; the agent composes everything. Native host depends on protocol and IPC client utilities, not storage or launch adapters.
 
 Desktop uses `@workspace/ui` and `@workspace/contracts`. Extension uses contracts and may use a small subset of UI. Avoid bundling the entire desktop design system into the extension service worker. No imports between app source trees.
 
-Canonical protocol schemas live in `packages/contracts/schema`; generated Rust and TypeScript are committed and checked for drift. Pick and record a generator during bootstrap. Enforce unknown-field and size rules explicitly; generated types alone do not validate untrusted input.
+Canonical protocol schemas live in `packages/contracts/schema`; generated Rust and TypeScript are committed and checked for drift. The generator choice is recorded in [ADR-011](DECISIONS.md#adr-011-schema-generator). Enforce unknown-field and size rules explicitly; generated types alone do not validate untrusted input.
 
 ## Frontend choices
 
@@ -56,7 +58,7 @@ React with TypeScript strict mode and Vite. Tailwind CSS 4, shadcn/ui and ReUI w
 
 ## Root command contract
 
-Implement these scripts in milestone 0; they are not currently executable:
+Implement these scripts in Phase 0 (tasks 0.5–0.10); scripts for later phases fail with a message naming the phase that implements them:
 
 | Command | Required behavior |
 | --- | --- |
@@ -69,9 +71,9 @@ Implement these scripts in milestone 0; they are not currently executable:
 | `pnpm typecheck` | Check desktop, extension and shared packages |
 | `pnpm test` | Run TypeScript unit tests, initially Vitest |
 | `pnpm build` | Build frontend packages and browser artifacts; no installer implied |
-| `pnpm package:windows` | Build release Rust binaries and Windows desktop installer |
+| `pnpm package:linux` | Build release Rust binaries and the RPM and AppImage desktop bundles (Phase 6) |
 
-Use Cargo commands directly for Rust checks. Platform-specific scripts must fail with useful messages on unsupported hosts. Development and test data directories must never reuse production checkpoints, pairing identities or registry entries.
+`pnpm package:windows` is deferred to the Windows adapter (Phase 7) and is not defined until then. Use Cargo commands directly for Rust checks. Platform-specific scripts must fail with useful messages on unsupported hosts. Development and test data directories must never reuse production checkpoints, pairing identities, sockets or native-host registrations.
 
 ## Toolchain policy
 
