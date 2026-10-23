@@ -54,6 +54,28 @@ Consequences: local IPC uses per-user Unix domain sockets verified with `SO_PEER
 
 **Status:** accepted by the user (2026-10-23). The repository is released under the MIT licence, copyright holder Caff-Core. Dependencies must have licences compatible with MIT distribution; record any exception here before adding it.
 
+## ADR-014: Toolchain and dependency versions
+
+**Status:** accepted (2026-10-23). Versions were checked against the npm registry, crates.io, the Node.js release index and the Rust stable channel manifest on 2026-10-23. Committed manifests use exact versions; lockfiles are committed when packages are added (tasks 0.5–0.8).
+
+| Component | Pinned version | Notes |
+| --- | --- | --- |
+| Node.js | 24.22.1 | Active LTS ("Krypton"). Node 26 is Current, not yet LTS; revisit when it enters LTS. |
+| pnpm | 12.15.0 | `packageManager` field. |
+| Rust | 1.99.1 | Latest stable. Tauri 2.12 needs 1.90 or newer. |
+| `tauri` / `tauri-build` crates | 2.12.5 / 2.7.4 | Latest 2.x. crates.io `latest` is 3.0.0-alpha; do not use it. |
+| `@tauri-apps/cli` / `@tauri-apps/api` | 2.12.4 | npm and crate must share the same major.minor (2.12). |
+| React / React DOM | 19.3.1 | Required by ReUI (React + Tailwind CSS v4). |
+| TypeScript | 6.0.3 | TypeScript 7.0 is `latest`, but typescript-eslint 8.72 supports `>=4.8.4 <6.1.0`. Move to 7.x when typescript-eslint supports it. |
+| Vite / `@vitejs/plugin-react` | 8.3.5 / 6.1.2 | plugin-react 6 requires Vite 8. |
+| Tailwind CSS / `@tailwindcss/vite` | 4.3.3 | Vite plugin supports Vite 5–8. |
+| shadcn CLI | 4.22.1 | Run as `pnpm dlx shadcn@4.22.1`, replacing `shadcn@latest` in commands returned by the ReUI MCP. |
+| ReUI | registry (unversioned source) | Free `@reui` registry items are copied as source; Base UI and Radix builds exist (style choice in ADR-012). |
+| Vitest | 5.0.5 | Supports Vite 6–8 and `@types/node` 24. |
+| ESLint / typescript-eslint / Prettier | 10.13.0 / 8.72.0 / 3.9.10 | Confirm plugin compatibility in task 0.5. |
+
+Upgrades happen in dedicated `chore` PRs that re-check these constraints and update this table.
+
 ## Open decisions
 
 - Window enumeration approach on GNOME Wayland (task 2.1).
