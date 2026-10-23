@@ -1,0 +1,7 @@
+{
+  "description": "Shared error response cases for Rust and TypeScript.",
+  "cases": [
+    { "name": "valid error response", "file": "valid-invalid-payload.json", "expect": "ok" },
+    { "name": "unknown error code", "file": "unknown-code.json", "expect": "INVALID_PAYLOAD" }
+  ]
+}

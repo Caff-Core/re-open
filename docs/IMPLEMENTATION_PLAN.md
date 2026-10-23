@@ -119,11 +119,11 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 
 ### 0.9 Contracts and schema generation pipeline — `feat` · [#9](https://github.com/Caff-Core/re-open/issues/9)
 
-- [ ] `packages/contracts/schema/` with the canonical protocol envelope schema (version 1) and error schema
-- [ ] Generate Rust types with `typify` into `crates/protocol` and TypeScript types with `json-schema-to-typescript` into `packages/contracts`; commit generated output
-- [ ] Runtime validation wired: `ajv` in TypeScript, `jsonschema` plus explicit size and unknown-field checks in Rust
-- [ ] `fixtures/protocol/` with valid, malformed, missing-field, unknown-version and oversized envelope fixtures; tests on both sides consume the same fixtures
-- [ ] `pnpm contracts:generate` regenerates; `pnpm contracts:check` fails on drift
+- [x] `packages/contracts/schema/` with the canonical protocol envelope schema (version 1) and error schema
+- [x] Generate Rust types with `typify` into `crates/protocol` and TypeScript types with `json-schema-to-typescript` into `packages/contracts`; commit generated output
+- [x] Runtime validation wired: `ajv` standalone validators in TypeScript (no runtime code generation, MV3-safe), `jsonschema` plus explicit size and unknown-field checks in Rust
+- [x] `fixtures/protocol/` with valid, malformed, missing-field, unknown-version and oversized envelope fixtures; tests on both sides consume the same fixtures
+- [x] `pnpm contracts:generate` regenerates; `pnpm contracts:check` fails on drift
 
 ### 0.10 Continuous integration — `ci` · [#10](https://github.com/Caff-Core/re-open/issues/10)
 

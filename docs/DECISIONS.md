@@ -44,7 +44,13 @@ Consequences: local IPC uses per-user Unix domain sockets verified with `SO_PEER
 
 ## ADR-011: Schema generator
 
-**Status:** proposed; confirm during task 0.9. Canonical JSON Schemas (draft 2020-12) live in `packages/contracts/schema`. Rust types are generated with `typify` into `crates/protocol`; TypeScript types with `json-schema-to-typescript` into `packages/contracts`. Generated output is committed and checked for drift. Runtime validation is separate from generated types: `ajv` in TypeScript, the `jsonschema` crate plus explicit size and unknown-field checks in Rust. If either generator cannot represent a required construct, simplify the schema rather than hand-editing generated code, and record the change here.
+**Status:** accepted (2026-10-23, task 0.9). Canonical JSON Schemas live in `packages/contracts/schema/*.schema.json`, written in **draft-07** (`definitions`, not `$defs`): typify 0.8 reads schemas through schemars 0.8, which models draft-07, and ajv and the `jsonschema` crate both support it.
+
+- **Rust:** `crates/protocol-codegen` (a workspace binary, so no global install) runs typify 0.8 and formats with prettyplease into `crates/protocol/src/generated/mod.rs`. `additionalProperties: false` becomes `#[serde(deny_unknown_fields)]`. The module is `#[rustfmt::skip]` so `cargo fmt` cannot cause drift.
+- **TypeScript:** `packages/contracts/scripts/generate.mjs` runs json-schema-to-typescript 16 for types and ajv 8 **standalone** code generation for validators into `packages/contracts/src/generated/`. Standalone validators are needed because the extension's Manifest V3 CSP forbids the runtime code generation (`new Function`) that ajv otherwise uses. The generator inlines ajv's one CommonJS helper so the output is pure ESM with no runtime dependency, and fails if any `require(` remains.
+- **Validation** is separate from generated types. `reopen-protocol` (`decode_envelope`, `decode_error_response`) and `@workspace/contracts` (`decodeEnvelope`, `decodeErrorResponse`) both: reject messages over 256 KiB before parsing (`LIMIT_EXCEEDED`), parse JSON, reject other protocol versions before schema validation (`VERSION_UNSUPPORTED`), then validate against the schema (`INVALID_PAYLOAD`, unknown fields included). Error details name only the schema path, never input values.
+- **Shared fixtures** in `fixtures/protocol/<group>/cases.json` are run by both test suites; large inputs are generated in memory with identical rules.
+- `pnpm contracts:generate` regenerates both sides; `pnpm contracts:check` fails when committed output differs. If a generator cannot represent a required construct, simplify the schema rather than hand-editing generated code, and record the change here.
 
 ## ADR-012: shadcn primitive family and ReUI style
 

@@ -1,0 +1,13 @@
+{
+  "protocol_version": 1,
+  "request_id": "9ddac584-c8a5-49ca-af3f-4f93fcc82c8d",
+  "kind": "browser.capture.begin",
+  "payload": {
+    "source_id": "3ee947ea-c562-42fd-a8df-64d1ca9ce311",
+    "capture_id": "8070bdd9-cdb6-456e-878b-e957c7baf04e",
+    "source_epoch": "f38432e7-cd5a-420c-bdef-8071d92e04d3",
+    "sequence": 42,
+    "chunk_count": 2,
+    "tab_count": 12
+  }
+}

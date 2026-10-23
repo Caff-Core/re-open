@@ -29,6 +29,7 @@ This is a target layout. Only Markdown files exist in the initial pack.
     core/                     # Domain types and policies
     storage/                  # rusqlite and migrations
     protocol/                 # Generated wire types and validation
+    protocol-codegen/         # typify generator for crates/protocol (ADR-011)
     platform/                 # Traits and fake adapter
     platform-linux/           # Linux/GNOME integration (first target)
     platform-windows/         # Windows API integration (Phase 7; not created until then)

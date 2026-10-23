@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:reopen:schema:envelope",
+  "title": "Envelope",
+  "description": "Canonical message envelope for every channel in docs/PROTOCOL.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol_version", "request_id", "kind", "payload"],
+  "properties": {
+    "protocol_version": {
+      "description": "Protocol major version. Unsupported versions fail closed with VERSION_UNSUPPORTED.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "request_id": {
+      "description": "Correlates a request with its response.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "kind": {
+      "description": "Operation name, for example browser.capture.begin. Each endpoint enforces its own allowlist.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "payload": {
+      "description": "Operation-specific payload, validated by the schema for its kind.",
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
