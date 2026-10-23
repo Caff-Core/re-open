@@ -13,14 +13,14 @@ Initial provider deadline: 5 seconds each, 10 seconds overall. A timeout produce
 
 ## Resource types
 
-| Kind | Capture | Restore |
-| --- | --- | --- |
-| Application | Adapter identity and validated executable reference | Launch supported executable without arbitrary stored arguments |
-| Project/document | Resource path from a supported app adapter | Adapter-specific argument vector |
-| Folder | Proven filesystem folder path | Open via supported file-manager adapter |
-| Browser tab | Source, window key, order, address, pinned/active state | Dispatch to the matching extension source |
-| Terminal context, later | Explicitly registered working directory and shell identity | Open a directory, never replay history |
-| Geometry, later | Bounds, display identity, window state | Clamp to currently available displays |
+| Kind                    | Capture                                                    | Restore                                                        |
+| ----------------------- | ---------------------------------------------------------- | -------------------------------------------------------------- |
+| Application             | Adapter identity and validated executable reference        | Launch supported executable without arbitrary stored arguments |
+| Project/document        | Resource path from a supported app adapter                 | Adapter-specific argument vector                               |
+| Folder                  | Proven filesystem folder path                              | Open via supported file-manager adapter                        |
+| Browser tab             | Source, window key, order, address, pinned/active state    | Dispatch to the matching extension source                      |
+| Terminal context, later | Explicitly registered working directory and shell identity | Open a directory, never replay history                         |
+| Geometry, later         | Bounds, display identity, window state                     | Clamp to currently available displays                          |
 
 Do not assume window titles reveal trustworthy document paths. Do not assume every editor exposes all open projects externally. Missing resource discovery still permits app-only restore with a capability warning.
 

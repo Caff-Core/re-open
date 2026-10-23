@@ -14,16 +14,16 @@ Memory-heavy Android builds can freeze the user's PC, requiring a forced shutdow
 
 ## Scope
 
-| First release | Later |
-| --- | --- |
-| Linux adapter: Fedora 44, GNOME 50 on Wayland | X11, KDE Plasma, Windows 11 and macOS adapters |
-| Brave extension, then Firefox; separate profiles | Chrome, Chromium, Edge and Flatpak browsers |
-| App identity and executable validation | Broader packaged-app support |
-| Browser addresses, tab order, pinned state | Tab groups and richer layouts |
+| First release                                                 | Later                                              |
+| ------------------------------------------------------------- | -------------------------------------------------- |
+| Linux adapter: Fedora 44, GNOME 50 on Wayland                 | X11, KDE Plasma, Windows 11 and macOS adapters     |
+| Brave extension, then Firefox; separate profiles              | Chrome, Chromium, Edge and Flatpak browsers        |
+| App identity and executable validation                        | Broader packaged-app support                       |
+| Browser addresses, tab order, pinned state                    | Tab groups and richer layouts                      |
 | Nautilus folder and VS Code/Zed project adapters where proven | Android Studio (after spike) and terminal adapters |
-| Snapshot preview, selection and result report | Named workspaces and global shortcuts |
-| Staged launches and conservative memory warning | Window geometry and multi-monitor restoration |
-| Local-only history and privacy exclusions | Optional encrypted exports |
+| Snapshot preview, selection and result report                 | Named workspaces and global shortcuts              |
+| Staged launches and conservative memory warning               | Window geometry and multi-monitor restoration      |
+| Local-only history and privacy exclusions                     | Optional encrypted exports                         |
 
 VS Code, Zed and Nautilus are the user's confirmed tools and the proposed initial resource adapters; each still needs proof that its open state is externally observable on GNOME Wayland. Android Studio is high-value but requires a capability spike; do not assume its open-project state is externally discoverable.
 

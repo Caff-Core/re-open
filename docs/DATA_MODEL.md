@@ -8,11 +8,11 @@ The agent is the only SQLite accessor. Use a dedicated writer thread with bounde
 
 Follow the XDG Base Directory specification; use the defaults when a variable is unset or not absolute, except `XDG_RUNTIME_DIR`, which has no safe default.
 
-| Purpose | Location | Contents | Mode |
-| --- | --- | --- | --- |
-| Data | `$XDG_DATA_HOME/reopen/` (default `~/.local/share/reopen/`) | `reopen.sqlite` with its WAL and shared-memory files, verified backups | `0700` directory, `0600` files |
-| State | `$XDG_STATE_HOME/reopen/` (default `~/.local/state/reopen/`) | Rotated redacted logs, preserved corrupt-database evidence | `0700` directory, `0600` files |
-| Runtime | `$XDG_RUNTIME_DIR/reopen/` | Singleton lock and sockets ([Protocols](PROTOCOL.md#local-sockets-on-linux)) | `0700` directory, `0600` files |
+| Purpose | Location                                                     | Contents                                                                     | Mode                           |
+| ------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------ |
+| Data    | `$XDG_DATA_HOME/reopen/` (default `~/.local/share/reopen/`)  | `reopen.sqlite` with its WAL and shared-memory files, verified backups       | `0700` directory, `0600` files |
+| State   | `$XDG_STATE_HOME/reopen/` (default `~/.local/state/reopen/`) | Rotated redacted logs, preserved corrupt-database evidence                   | `0700` directory, `0600` files |
+| Runtime | `$XDG_RUNTIME_DIR/reopen/`                                   | Singleton lock and sockets ([Protocols](PROTOCOL.md#local-sockets-on-linux)) | `0700` directory, `0600` files |
 
 Settings live in SQLite, not a separate configuration file. The XDG autostart entry (`$XDG_CONFIG_HOME/autostart/`) and native-host manifests are registration entries owned by the installer and setup flow, not agent data.
 
@@ -22,21 +22,21 @@ Enable foreign keys, Write-Ahead Logging (WAL) and `synchronous=FULL`; set a bou
 
 ## Logical tables
 
-| Table | Important fields |
-| --- | --- |
-| `workspaces` | id, name, created_at; initial singleton Default workspace |
-| `sessions` | id, started_at, clean_exit_at, previous_session_id |
-| `checkpoints` | id, workspace_id, session_id, captured_at, reason, completeness, content_hash |
-| `checkpoint_sources` | checkpoint_id, source_key, state, captured_at, last_seen_at, error_code |
-| `resources` | id, checkpoint_id, kind, adapter_id, adapter_version, identity_key, ordinal, validated_payload |
-| `recovery_candidates` | session_id, checkpoint_id, disposition, created_at |
-| `checkpoint_pins` | checkpoint_id, reason, created_at; multiple reasons permitted |
-| `browser_sources` | source_id, browser_family, display_label, enabled, pairing_key_reference |
-| `browser_captures` | source_id, capture_id, source_epoch, sequence, captured_at, received_at, state |
-| `restore_runs` | id, checkpoint_id, state, created_at, completed_at |
-| `restore_actions` | id, run_id, ordinal, resource_id, state, attempt_id, result_code |
-| `settings` | key, version, validated_value |
-| `schema_migrations` | version, applied_at |
+| Table                 | Important fields                                                                               |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| `workspaces`          | id, name, created_at; initial singleton Default workspace                                      |
+| `sessions`            | id, started_at, clean_exit_at, previous_session_id                                             |
+| `checkpoints`         | id, workspace_id, session_id, captured_at, reason, completeness, content_hash                  |
+| `checkpoint_sources`  | checkpoint_id, source_key, state, captured_at, last_seen_at, error_code                        |
+| `resources`           | id, checkpoint_id, kind, adapter_id, adapter_version, identity_key, ordinal, validated_payload |
+| `recovery_candidates` | session_id, checkpoint_id, disposition, created_at                                             |
+| `checkpoint_pins`     | checkpoint_id, reason, created_at; multiple reasons permitted                                  |
+| `browser_sources`     | source_id, browser_family, display_label, enabled, pairing_key_reference                       |
+| `browser_captures`    | source_id, capture_id, source_epoch, sequence, captured_at, received_at, state                 |
+| `restore_runs`        | id, checkpoint_id, state, created_at, completed_at                                             |
+| `restore_actions`     | id, run_id, ordinal, resource_id, state, attempt_id, result_code                               |
+| `settings`            | key, version, validated_value                                                                  |
+| `schema_migrations`   | version, applied_at                                                                            |
 
 All IDs are UUID strings generated by trusted components as appropriate. Timestamps are UTC ISO 8601; display in the user's local timezone. Use monotonic clocks for local deadlines, not wall-clock timestamps. Browser IDs and process IDs are transient observations, not durable resource identities.
 

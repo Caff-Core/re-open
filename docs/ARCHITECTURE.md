@@ -16,14 +16,14 @@ IPC means inter-process communication. On Linux, the first target, the agent lis
 
 ## Responsibilities
 
-| Component | Owns | Must not own |
-| --- | --- | --- |
-| Rust agent | Scheduling, capture, storage, restore plans, launch policy | Webview rendering |
-| Tauri shell | Tray, explicit UI opening, narrow command forwarding | Separate checkpoint writer |
-| React frontend | Preview, selection, settings and status | Executable launch authority |
-| Native bridge | Browser framing, restricted forwarding, delivery | Desktop launch commands or database access |
-| Extension | Browser state, permitted browser restoration | Filesystem scanning or OS app launching |
-| Platform adapters | Native app/window discovery and supported launch operations | Product-level retention policy |
+| Component         | Owns                                                        | Must not own                               |
+| ----------------- | ----------------------------------------------------------- | ------------------------------------------ |
+| Rust agent        | Scheduling, capture, storage, restore plans, launch policy  | Webview rendering                          |
+| Tauri shell       | Tray, explicit UI opening, narrow command forwarding        | Separate checkpoint writer                 |
+| React frontend    | Preview, selection, settings and status                     | Executable launch authority                |
+| Native bridge     | Browser framing, restricted forwarding, delivery            | Desktop launch commands or database access |
+| Extension         | Browser state, permitted browser restoration                | Filesystem scanning or OS app launching    |
+| Platform adapters | Native app/window discovery and supported launch operations | Product-level retention policy             |
 
 ## Desktop lifetime
 

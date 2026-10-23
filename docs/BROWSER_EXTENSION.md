@@ -30,15 +30,15 @@ Native-host registration is per user. Use separate explicit allowed extension ID
 
 ## Browser differences
 
-| | Brave (first) | Firefox (second) |
-| --- | --- | --- |
-| Per-user host manifest | `~/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts/com.caffcore.reopen.host.json` | `~/.mozilla/native-messaging-hosts/com.caffcore.reopen.host.json` |
-| Caller allowlist field | `allowed_origins`: `chrome-extension://<id>/` entries | `allowed_extensions`: add-on IDs |
-| Host arguments at start | Caller origin | Path to the host manifest, then the add-on ID |
-| Extension identity | ID derived from the packaging key; pin the development key so the ID is stable | `browser_specific_settings.gecko.id` in the manifest |
-| Background context | `background.service_worker` | `background.scripts` (event page); Firefox does not run MV3 service workers |
-| API namespace | `chrome.*` | `browser.*` (promise-based); `chrome.*` partly aliased |
-| Distribution | Chrome Web Store compatible package, or unpacked for development | AMO-signed XPI (unlisted); unsigned only in development profiles |
+|                         | Brave (first)                                                                              | Firefox (second)                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| Per-user host manifest  | `~/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts/com.caffcore.reopen.host.json` | `~/.mozilla/native-messaging-hosts/com.caffcore.reopen.host.json`           |
+| Caller allowlist field  | `allowed_origins`: `chrome-extension://<id>/` entries                                      | `allowed_extensions`: add-on IDs                                            |
+| Host arguments at start | Caller origin                                                                              | Path to the host manifest, then the add-on ID                               |
+| Extension identity      | ID derived from the packaging key; pin the development key so the ID is stable             | `browser_specific_settings.gecko.id` in the manifest                        |
+| Background context      | `background.service_worker`                                                                | `background.scripts` (event page); Firefox does not run MV3 service workers |
+| API namespace           | `chrome.*`                                                                                 | `browser.*` (promise-based); `chrome.*` partly aliased                      |
+| Distribution            | Chrome Web Store compatible package, or unpacked for development                           | AMO-signed XPI (unlisted); unsigned only in development profiles            |
 
 The host `path` must be absolute. Both manifests point at the same `reopen-host` binary; the host identifies the browser family from its start arguments and verifies the caller against the allowlist before forwarding anything. Isolate API differences in one small browser-API module rather than branching throughout the extension. Verify these paths and fields against current browser documentation when implementing tasks 3.7 and 3.9.
 

@@ -2,15 +2,15 @@
 
 ## Test layers
 
-| Layer | What to verify |
-| --- | --- |
-| Rust unit | Retention, identity, selection, pacing, pressure hysteresis, source freshness |
-| Storage integration | Atomic writes, candidate pins, migration, corrupt/read-only/full storage |
-| Contract fixtures | Rust/TypeScript agreement, bounds, versions, chunks, duplicate acknowledgements |
-| Extension unit | Event coalescing, private exclusion, reconnect, worker state recovery |
-| React component | Selection stability, partial/stale indicators, cancellation and error rendering |
+| Layer                    | What to verify                                                                                                                                      |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rust unit                | Retention, identity, selection, pacing, pressure hysteresis, source freshness                                                                       |
+| Storage integration      | Atomic writes, candidate pins, migration, corrupt/read-only/full storage                                                                            |
+| Contract fixtures        | Rust/TypeScript agreement, bounds, versions, chunks, duplicate acknowledgements                                                                     |
+| Extension unit           | Event coalescing, private exclusion, reconnect, worker state recovery                                                                               |
+| React component          | Selection stability, partial/stale indicators, cancellation and error rendering                                                                     |
 | Native Linux integration | GNOME Wayland app discovery, current-user sockets and `SO_PEERCRED`, desktop-entry launch, Secret Service, host-manifest and autostart registration |
-| End-to-end | Capture, terminate processes, relaunch, select, restore and report |
+| End-to-end               | Capture, terminate processes, relaunch, select, restore and report                                                                                  |
 
 Use Rust's test framework, temporary databases, fake clocks/providers and Vitest for TypeScript. Use browser/UI automation for flows it can actually exercise. Browser extension and Linux native behavior require dedicated integration runs; a web-only mock cannot certify them.
 

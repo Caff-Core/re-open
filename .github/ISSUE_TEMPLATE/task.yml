@@ -1,6 +1,6 @@
 name: Task
 description: A plan task (one issue, one branch, one PR)
-title: "[N.M] "
+title: '[N.M] '
 labels: []
 body:
   - type: input
@@ -8,7 +8,7 @@ body:
     attributes:
       label: Plan reference
       description: Phase and task number in docs/IMPLEMENTATION_PLAN.md
-      placeholder: "Phase 1 · Task 1.4"
+      placeholder: 'Phase 1 · Task 1.4'
     validations:
       required: true
   - type: dropdown
@@ -22,14 +22,14 @@ body:
     id: area
     attributes:
       label: Area
-      placeholder: "engine, storage, protocol, browser, extension, desktop, ui, platform-linux, ci, docs"
+      placeholder: 'engine, storage, protocol, browser, extension, desktop, ui, platform-linux, ci, docs'
   - type: textarea
     id: subtasks
     attributes:
       label: Sub-tasks
       description: Copy the checklist from the plan file and keep both in sync.
       value: |
-        - [ ] 
+        - [ ]
     validations:
       required: true
   - type: textarea

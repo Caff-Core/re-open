@@ -6,18 +6,18 @@ A local desktop utility that checkpoints open applications and browser tabs, the
 
 ## Agreed stack
 
-| Area | Choice |
-| --- | --- |
-| Background engine | Rust |
-| Desktop shell | Tauri 2 |
-| Interface | React, TypeScript, Vite |
-| Design system | Tailwind CSS 4, shadcn/ui, ReUI |
-| Persistence | SQLite through rusqlite |
-| Process and memory sampling | sysinfo |
-| Browser extension | TypeScript, Manifest V3 (Brave first, then Firefox) |
-| Browser transport | Native Messaging to a Rust bridge |
-| Local IPC (Linux) | Per-user Unix domain sockets verified with `SO_PEERCRED` |
-| Repository | pnpm workspace plus Cargo workspace |
+| Area                        | Choice                                                   |
+| --------------------------- | -------------------------------------------------------- |
+| Background engine           | Rust                                                     |
+| Desktop shell               | Tauri 2                                                  |
+| Interface                   | React, TypeScript, Vite                                  |
+| Design system               | Tailwind CSS 4, shadcn/ui, ReUI                          |
+| Persistence                 | SQLite through rusqlite                                  |
+| Process and memory sampling | sysinfo                                                  |
+| Browser extension           | TypeScript, Manifest V3 (Brave first, then Firefox)      |
+| Browser transport           | Native Messaging to a Rust bridge                        |
+| Local IPC (Linux)           | Per-user Unix domain sockets verified with `SO_PEERCRED` |
+| Repository                  | pnpm workspace plus Cargo workspace                      |
 
 **First target:** Fedora 44 x86_64, GNOME 50 on Wayland, Brave (native RPM), then Firefox. Editors VS Code and Zed; file manager Nautilus. See [ADR-009](docs/DECISIONS.md#adr-009-linuxgnome-wayland-and-brave-first) and the target matrix in the [implementation plan](docs/IMPLEMENTATION_PLAN.md#target-matrix). X11, KDE Plasma, Chrome/Chromium/Edge, Flatpak browsers, Windows 11 and macOS are later adapters (Phase 7), not first-release support.
 
@@ -51,11 +51,11 @@ No cloud service, account, hosted backend or database server is required. SQLite
 
 Exact versions are pinned in the repository and recorded in [ADR-014](docs/DECISIONS.md#adr-014-toolchain-and-dependency-versions).
 
-| Tool | Version | Pinned by |
-| --- | --- | --- |
-| Node.js | 24.22.1 (LTS) | `.nvmrc` (`nvm install && nvm use`), `engines` in `package.json` |
-| pnpm | 12.15.0 | `packageManager` in `package.json` (pnpm switches to it automatically) |
-| Rust | 1.99.1 with `rustfmt` and `clippy` | `rust-toolchain.toml` (rustup installs it automatically) |
+| Tool    | Version                            | Pinned by                                                              |
+| ------- | ---------------------------------- | ---------------------------------------------------------------------- |
+| Node.js | 24.22.1 (LTS)                      | `.nvmrc` (`nvm install && nvm use`), `engines` in `package.json`       |
+| pnpm    | 12.15.0                            | `packageManager` in `package.json` (pnpm switches to it automatically) |
+| Rust    | 1.99.1 with `rustfmt` and `clippy` | `rust-toolchain.toml` (rustup installs it automatically)               |
 
 Fedora 44 system packages for Tauri 2 (WebKitGTK 4.1):
 
