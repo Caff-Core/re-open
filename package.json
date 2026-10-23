@@ -16,7 +16,7 @@
     "build": "pnpm -r --if-present run build",
     "contracts:generate": "node scripts/pending.mjs contracts:generate 0.9",
     "contracts:check": "node scripts/pending.mjs contracts:check 0.9",
-    "dev:desktop": "node scripts/pending.mjs dev:desktop 0.7",
+    "dev:desktop": "pnpm --filter @workspace/desktop tauri dev",
     "dev:agent": "node scripts/pending.mjs dev:agent 1.8",
     "dev:extension": "node scripts/pending.mjs dev:extension 3.4",
     "package:linux": "node scripts/pending.mjs package:linux 6.1"
