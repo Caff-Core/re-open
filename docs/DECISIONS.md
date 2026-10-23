@@ -18,11 +18,11 @@
 
 ## ADR-005: Separate per-user agent
 
-**Status:** proposed implementation choice. Capture survives UI/browser exits. A tray shell provides login startup and opens a webview on demand. No elevated service; desktop-session discovery and user-specific resource access belong to the logged-in user context.
+**Status:** proposed implementation choice. Capture survives UI/browser exits. A tray shell provides login startup and opens a webview on demand. No elevated or system-wide service; desktop-session discovery and user-specific resource access belong to the logged-in user context. On Linux, login startup uses an XDG autostart entry inside the graphical session.
 
-## ADR-006: Native Messaging plus local pipes
+## ADR-006: Native Messaging plus local sockets
 
-**Status:** proposed implementation choice. Extension talks to a restricted native bridge, then the agent. Avoid public localhost endpoints, browser debugging ports and permission-heavy page inspection. Additional binaries require installer/registration tests.
+**Status:** proposed implementation choice. Extension talks to a restricted native bridge, then the agent over a per-user local socket (Unix domain socket on Linux; named pipe in the later Windows adapter). Avoid public localhost endpoints, browser debugging ports and permission-heavy page inspection. Additional binaries require installer/registration tests.
 
 ## ADR-007: Explicit restore and durable action journal
 
@@ -30,13 +30,36 @@
 
 ## ADR-008: Windows and Chromium first
 
-**Status:** provisional, awaiting user confirmation. Targeting one OS/browser family makes a useful first release achievable. Platform interfaces preserve extension points without claiming cross-platform support before implementation.
+**Status:** superseded by ADR-009. Targeting one OS/browser family makes a useful first release achievable. Platform interfaces preserve extension points without claiming cross-platform support before implementation. The Windows design (named pipes, registry host registration, per-user installer) is retained as the Phase 7 Windows adapter.
+
+## ADR-009: Linux/GNOME Wayland and Brave first
+
+**Status:** accepted by the user (2026-10-23). The first target is the development machine: Fedora 44 x86_64, GNOME 50 on Wayland, 15 GiB RAM, Brave (native RPM) as the daily browser. Firefox follows on the same extension codebase. Editors: VS Code, then Zed; Android Studio only after a capability spike. File manager: Nautilus. Other Linux desktops, X11, Chrome/Chromium/Edge, Flatpak browsers, Windows and macOS are later adapters (Phase 7), not first-release claims.
+
+Consequences: local IPC uses per-user Unix domain sockets verified with `SO_PEERCRED`; storage follows the XDG Base Directory specification; pairing credentials use the Secret Service API; window discovery on Wayland is an open spike (task 2.1) because Wayland does not expose a global window list to ordinary clients; stock GNOME has no tray (task 4.1). Native validation runs on the reference machine; CI uses Linux runners.
+
+## ADR-010: Product name and identifiers
+
+**Status:** accepted by the user (2026-10-23). Product name **Re-Open**, replacing the working name "Workspace Recovery". Tauri identifier `com.caffcore.reopen`; Native Messaging host name `com.caffcore.reopen.host`; binaries `reopen-agent` (background agent) and `reopen-host` (native bridge); XDG directory name `reopen`. Development builds use the directory name `reopen-dev`, host name `com.caffcore.reopen.dev.host` and separate extension IDs so they never share data, sockets or host registrations with production.
+
+## ADR-011: Schema generator
+
+**Status:** proposed; confirm during task 0.9. Canonical JSON Schemas (draft 2020-12) live in `packages/contracts/schema`. Rust types are generated with `typify` into `crates/protocol`; TypeScript types with `json-schema-to-typescript` into `packages/contracts`. Generated output is committed and checked for drift. Runtime validation is separate from generated types: `ajv` in TypeScript, the `jsonschema` crate plus explicit size and unknown-field checks in Rust. If either generator cannot represent a required construct, simplify the schema rather than hand-editing generated code, and record the change here.
+
+## ADR-012: shadcn primitive family and ReUI style
+
+**Status:** proposed; confirm during task 0.8. One primitive family and one style for the whole desktop app, initially proposed as `base-nova`, configured in a shared `@workspace/ui` package. ReUI components come from its free registry and are added through the shadcn CLI at a pinned version, using install commands returned by the ReUI MCP server. The chosen style is mirrored in the ReUI MCP `X-Reui-Style` header so generated guidance matches installed components. Premium ReUI items are not used without an explicit licence decision.
+
+## ADR-013: MIT licence
+
+**Status:** accepted by the user (2026-10-23). The repository is released under the MIT licence, copyright holder Caff-Core. Dependencies must have licences compatible with MIT distribution; record any exception here before adding it.
 
 ## Open decisions
 
-- Confirm target OS, browser profiles, editor, RAM and available storage.
-- Choose final product name, identifiers and signing/distribution approach.
-- Verify editor/project discovery APIs for the user's actual workflow.
-- Choose schema generator and one shadcn/ReUI primitive family after compatibility verification.
-- Calibrate memory thresholds and resource budgets on the target machine.
+- Window enumeration approach on GNOME Wayland (task 2.1).
+- Tray fallback on stock GNOME (task 4.1).
+- Signing and distribution approach for RPM, AppImage and extension packages.
+- Verify editor/project discovery for VS Code, Zed and Android Studio (tasks 5.1–5.3).
+- Confirm schema generator (task 0.9) and shadcn/ReUI primitive family (task 0.8).
+- Calibrate memory thresholds and resource budgets on the 15 GiB reference machine.
 - Decide later whether encrypted export or additional platforms justify their complexity.

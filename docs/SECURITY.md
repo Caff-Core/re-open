@@ -10,7 +10,7 @@ No cloud synchronization, remote telemetry, screenshot capture, keystroke collec
 
 - Treat stored snapshots and extension payloads as untrusted at execution time.
 - Validate schemas, lengths, enum values, identifiers and cross-references before persistence or side effects.
-- Current-user pipe permissions and installation credentials limit access; browser role routing cannot grant desktop authority.
+- Current-user socket permissions (`0700` runtime directory, `0600` sockets, `SO_PEERCRED` UID check on Linux) and installation credentials limit access; browser role routing cannot grant desktop authority.
 - Browser source IDs are identifiers, not authentication secrets. Enrollment binds the source to a permitted browser connection.
 - Native host stdout is framed protocol only. All logging uses a redaction layer.
 - Tauri capabilities must permit only required commands. Deny generic shell/file access, remote web content and arbitrary navigation.
@@ -23,9 +23,9 @@ Initial browser restoration permits HTTP/HTTPS resources and controlled blank ta
 
 ## Local data
 
-SQLite contents include private addresses and file paths. Use per-user application storage with restrictive access. SQLite is not encrypted by default; describe that honestly. Full-disk protection is external to the app. Optional database/export encryption is a future decision, not a first-release claim.
+SQLite contents include private addresses and file paths. Use per-user application storage with restrictive access (`0700` directories and `0600` files under the XDG locations in [Data model](DATA_MODEL.md#directories-on-linux)). SQLite is not encrypted by default; describe that honestly. Full-disk protection is external to the app. Optional database/export encryption is a future decision, not a first-release claim.
 
-Paired-source credentials use an operating-system-protected secret store, with records separated from checkpoint data. Support revoke/re-enroll. A fresh install and an uninstall-with-data-retained must have explicit credential behavior.
+Paired-source credentials use an operating-system-protected secret store, with records separated from checkpoint data. On Linux this is the freedesktop Secret Service API (GNOME Keyring on the reference machine, reached through libsecret or an equivalent D-Bus client chosen in task 3.6). Store items with attributes identifying the application and source UUID, never the credential in SQLite; `browser_sources.pairing_key_reference` holds only the lookup reference. If the Secret Service is unavailable or locked, report pairing as unavailable and never fall back to a plaintext file. The Windows adapter later uses the per-user Credential Manager or DPAPI. Support revoke/re-enroll. A fresh install and an uninstall-with-data-retained must have explicit credential behavior.
 
 Logs contain stable event codes, timings, counts and opaque IDs only. No addresses, titles, paths, raw payloads or credentials. Use bounded rotation, initially three files of 1 MiB each. Diagnostic exports require explicit selection and redaction review.
 

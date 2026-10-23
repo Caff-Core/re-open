@@ -2,7 +2,21 @@
 
 ## Storage ownership
 
-The agent is the only SQLite accessor. Use a dedicated writer thread with bounded requests; queries also go through the storage module. Store data in the per-user local application data directory, outside browser profiles and the repository. Development uses an isolated directory.
+The agent is the only SQLite accessor. Use a dedicated writer thread with bounded requests; queries also go through the storage module. Store data in per-user application directories, outside browser profiles and the repository. Development uses an isolated directory.
+
+## Directories on Linux
+
+Follow the XDG Base Directory specification; use the defaults when a variable is unset or not absolute, except `XDG_RUNTIME_DIR`, which has no safe default.
+
+| Purpose | Location | Contents | Mode |
+| --- | --- | --- | --- |
+| Data | `$XDG_DATA_HOME/reopen/` (default `~/.local/share/reopen/`) | `reopen.sqlite` with its WAL and shared-memory files, verified backups | `0700` directory, `0600` files |
+| State | `$XDG_STATE_HOME/reopen/` (default `~/.local/state/reopen/`) | Rotated redacted logs, preserved corrupt-database evidence | `0700` directory, `0600` files |
+| Runtime | `$XDG_RUNTIME_DIR/reopen/` | Singleton lock and sockets ([Protocols](PROTOCOL.md#local-sockets-on-linux)) | `0700` directory, `0600` files |
+
+Settings live in SQLite, not a separate configuration file. The XDG autostart entry (`$XDG_CONFIG_HOME/autostart/`) and native-host manifests are registration entries owned by the installer and setup flow, not agent data.
+
+**Development isolation:** `pnpm dev:agent` and development builds use the directory name `reopen-dev` in place of `reopen` in all three locations, so development never opens production checkpoints, sockets or pairing records. Automated tests use fresh temporary directories passed explicitly to the agent and never resolve XDG locations. The repository's ignored `.dev-data/` directory may hold disposable local fixtures only.
 
 Enable foreign keys, Write-Ahead Logging (WAL) and `synchronous=FULL`; set a bounded busy timeout. These settings support durable transactions but cannot guarantee survival of failing storage hardware. Use SQLite's backup API for live backups; copying only the main database while WAL is active is unsafe.
 

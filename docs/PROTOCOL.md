@@ -5,11 +5,26 @@
 | Channel | Transport | Authority |
 | --- | --- | --- |
 | React to Tauri | Tauri commands/events | Typed UI requests |
-| Desktop shell to agent | Current-user named pipe | Preview, settings, capture, approved restore |
+| Desktop shell to agent | Current-user Unix socket `desktop.sock` | Preview, settings, capture, approved restore |
 | Extension to native host | Browser Native Messaging | Browser capture and browser restore acknowledgements |
-| Native host to agent | Separate restricted named pipe | Same browser-only operations |
+| Native host to agent | Separate current-user Unix socket `browser.sock` | Same browser-only operations |
 
-Restrict pipe access to the user's Windows security identifier. Authenticate role and installation context; do not trust a JSON `role` value. Use distinct endpoints, explicit operation allowlists and installation credentials protected with user-level access. Same-user malware remains outside the protection boundary.
+Authenticate role and installation context from the endpoint and credentials; do not trust a JSON `role` value. Use distinct endpoints, explicit operation allowlists and installation credentials protected with user-level access. Same-user malware remains outside the protection boundary.
+
+## Local sockets on Linux
+
+| Path | Mode | Purpose |
+| --- | --- | --- |
+| `$XDG_RUNTIME_DIR/reopen/` | `0700`, owned by the user | Runtime directory; created by the agent |
+| `$XDG_RUNTIME_DIR/reopen/agent.lock` | `0600` | Agent singleton lock |
+| `$XDG_RUNTIME_DIR/reopen/desktop.sock` | `0600` | Desktop-role endpoint |
+| `$XDG_RUNTIME_DIR/reopen/browser.sock` | `0600` | Browser-role endpoint used only by `reopen-host` |
+
+Development uses `$XDG_RUNTIME_DIR/reopen-dev/` with the same names. If `XDG_RUNTIME_DIR` is unset, the agent refuses to start its endpoints; it never falls back to a shared directory such as `/tmp`. Refuse to use an existing directory or socket that is not owned by the current UID or has broader permissions. Remove a stale socket only while holding the singleton lock.
+
+On accept, read `SO_PEERCRED` and reject the connection unless the peer UID equals the agent's UID. The peer PID is a diagnostic hint, not an authority: it can be reused and same-user processes can impersonate each other. Keep socket paths short; `sun_path` is limited to 108 bytes, which is why tests use short temporary directories.
+
+Unix sockets are the Linux transport only. The Windows adapter uses named pipes restricted to the user's security identifier ([Later platform adapters](ARCHITECTURE.md#later-platform-adapters)); the envelope and framing below are identical across transports.
 
 ## Canonical envelope
 
@@ -45,7 +60,7 @@ Desktop `restore.preview` produces a plan ID, resource selections, policy warnin
 
 ## Framing and limits
 
-Native Messaging uses a four-byte native-endian length followed by UTF-8 JSON. Standard output contains protocol frames only; diagnostics go to standard error with redaction. Internal named-pipe framing uses an explicitly documented four-byte little-endian length followed by the same envelope.
+Native Messaging uses a four-byte native-endian length followed by UTF-8 JSON. Standard output contains protocol frames only; diagnostics go to standard error with redaction. Internal agent socket framing uses an explicitly documented four-byte little-endian length followed by the same envelope, on every platform.
 
 Project limits: 256 KiB per encoded message, 64 chunks, 8 MiB per browser capture, 2,000 tabs per source, 30-second staging expiry and one staged capture per source. Reject oversize frames before allocating their declared length. Limit outstanding requests to 16 per connection. These are application limits below browser transport ceilings.
 

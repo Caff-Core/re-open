@@ -12,8 +12,10 @@ This repository initially contains documentation only. Do not represent proposed
 - One monorepo for desktop app, browser extension, native bridge and shared crates/contracts.
 - SQLite, with one background-agent writer. No hosted backend, cloud sync or telemetry by default.
 - The Rust agent continues running without an open desktop window or browser.
-- Windows 11 x64 and Chrome/Edge are provisional first targets. Confirm the user's platform, browser, preferred editor and available memory before OS-specific implementation.
-- Use an ordinary per-user process at login, not an elevated Windows service.
+- Product name Re-Open; identifiers `com.caffcore.reopen`, `com.caffcore.reopen.host`, binaries `reopen-agent` and `reopen-host` (ADR-010).
+- First target (ADR-009): Fedora 44 x86_64, GNOME 50 on Wayland, Brave then Firefox, VS Code then Zed, Nautilus, 15 GiB RAM. Windows, macOS, X11/KDE, other Chromium browsers and Flatpak browsers are Phase 7 adapters; do not build them earlier.
+- Local IPC on Linux: per-user Unix domain sockets in `$XDG_RUNTIME_DIR/reopen/`, caller UID checked with `SO_PEERCRED`. Storage under XDG directories. Pairing credentials in the Secret Service.
+- Use an ordinary per-user process at login (XDG autostart), never root, a system service or elevation.
 
 ## Invariants
 
@@ -33,7 +35,7 @@ This repository initially contains documentation only. Do not represent proposed
 - Keep business logic in Rust crates, not React components or Tauri command handlers.
 - Keep Tauri commands narrow and typed; never expose generic shell execution.
 - Define protocol schemas first, generate matching Rust/TypeScript representations, and test shared fixtures.
-- Use composition and platform adapters. Isolate unsafe Windows calls in `platform-windows` with explicit safety comments and bounded resource lifetimes.
+- Use composition and platform adapters. Isolate unsafe OS calls in platform crates (`platform-linux` first; `platform-windows` in Phase 7) with explicit safety comments and bounded resource lifetimes.
 - Implement the smallest complete vertical slice, then extend. Do not generate every module as empty scaffolding.
 - Follow existing conventions; pin dependency versions and commit lockfiles when bootstrapping. Verify current official documentation rather than guessing dependency APIs.
 - Add meaningful tests for persistence, protocol validation and restore side effects. Use fake adapters for most tests.
@@ -65,7 +67,7 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 ```
 
-Run native Windows integration and installer checks on Windows. Cross-platform fixture tests are not substitutes for native validation.
+Run native Linux integration and package checks on the Fedora 44 / GNOME Wayland reference machine; CI containers cannot exercise a desktop session, real browser profiles or the Secret Service. Cross-platform fixture tests are not substitutes for native validation.
 
 <!-- BEGIN:reui-agent-rules -->
 ## ReUI design rules (every UI edit, follow-ups included)

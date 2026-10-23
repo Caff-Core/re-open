@@ -16,16 +16,16 @@ Memory-heavy Android builds can freeze the user's PC, requiring a forced shutdow
 
 | First release | Later |
 | --- | --- |
-| Windows adapter after platform confirmation | macOS/Linux adapters |
-| Chrome/Edge extension, separate profiles | Firefox extension |
+| Linux adapter: Fedora 44, GNOME 50 on Wayland | X11, KDE Plasma, Windows 11 and macOS adapters |
+| Brave extension, then Firefox; separate profiles | Chrome, Chromium, Edge and Flatpak browsers |
 | App identity and executable validation | Broader packaged-app support |
 | Browser addresses, tab order, pinned state | Tab groups and richer layouts |
-| File Explorer folder and editor project adapters where proven | Android Studio and terminal adapters |
+| Nautilus folder and VS Code/Zed project adapters where proven | Android Studio (after spike) and terminal adapters |
 | Snapshot preview, selection and result report | Named workspaces and global shortcuts |
 | Staged launches and conservative memory warning | Window geometry and multi-monitor restoration |
 | Local-only history and privacy exclusions | Optional encrypted exports |
 
-VS Code and File Explorer are proposed initial resource adapters, pending confirmation of the user's tools. Android Studio is high-value but requires a capability spike; do not assume its open-project state is externally discoverable.
+VS Code, Zed and Nautilus are the user's confirmed tools and the proposed initial resource adapters; each still needs proof that its open state is externally observable on GNOME Wayland. Android Studio is high-value but requires a capability spike; do not assume its open-project state is externally discoverable.
 
 ## User flows
 
@@ -49,7 +49,7 @@ Preview proposed actions and unsupported items. User selects resources and confi
 
 Defaults are configurable policy, not performance guarantees. Start with 60-second checkpoints, 5-second memory sampling, a 2-second minimum launch gap, seven-day history and 500 automatic checkpoints per workspace. Use the tighter applicable history limit; pinned checkpoints are exempt. Warn when storage reaches a configurable 100 MiB budget and request pruning if pins prevent compliance.
 
-At most 2,000 tabs per browser source are supported initially. Exceeding this limit marks capture partial; never silently truncate. Memory-pressure thresholds use available physical memory with hysteresis; calibrate after the user's RAM and workload are known. Do not automatically kill apps, change pagefile settings or initiate shutdown.
+At most 2,000 tabs per browser source are supported initially. Exceeding this limit marks capture partial; never silently truncate. Memory-pressure thresholds use available physical memory with hysteresis; on Linux, memory pressure stall information (`/proc/pressure/memory`) is an additional signal. Calibrate on the 15 GiB reference machine under the Android build workload. Do not automatically kill apps, change swap or zram settings or initiate shutdown.
 
 ## Acceptance criteria
 
