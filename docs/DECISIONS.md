@@ -48,7 +48,13 @@ Consequences: local IPC uses per-user Unix domain sockets verified with `SO_PEER
 
 ## ADR-012: shadcn primitive family and ReUI style
 
-**Status:** proposed; confirm during task 0.8. One primitive family and one style for the whole desktop app, initially proposed as `base-nova`, configured in a shared `@workspace/ui` package. ReUI components come from its free registry and are added through the shadcn CLI at a pinned version, using install commands returned by the ReUI MCP server. The chosen style is mirrored in the ReUI MCP `X-Reui-Style` header so generated guidance matches installed components. Premium ReUI items are not used without an explicit licence decision.
+**Status:** accepted (2026-10-23, task 0.8). Style `base-nova`: the nova style on Base UI (`@base-ui/react`), neutral base colour, CSS variables, Lucide icons, Geist variable font bundled locally through Fontsource (no remote fonts, so the CSP stays `'self'`).
+
+- Shared primitives and theme live in `packages/ui` (`@workspace/ui`): `src/styles/globals.css` (Tailwind CSS 4 theme tokens for light and dark), `src/lib/utils.ts`, shadcn components in `src/components/`, ReUI components in `src/components/reui/`. Apps import them as `@workspace/ui/components/<name>` and `@workspace/ui/components/reui/<name>`.
+- Both `packages/ui/components.json` and `apps/desktop/components.json` declare the free `@reui` registry. Run installs from `apps/desktop` with the pinned CLI (`pnpm dlx shadcn@4.22.1 add <name> --yes`, or `@reui/<name>`); the CLI writes shared components into `packages/ui`.
+- Installed component files are vendored: never edit them to restyle (change theme tokens instead), and they are excluded from Prettier and import ordering so a reinstall stays diff-free.
+- The ReUI MCP server URL carries `?style=base-nova` in every agent client config so its docs and previews match Base UI.
+- Premium ReUI items are not used without an explicit licence decision.
 
 ## ADR-013: MIT licence
 

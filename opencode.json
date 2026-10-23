@@ -3,7 +3,7 @@
   "mcp": {
     "reui": {
       "type": "remote",
-      "url": "https://mcp.reui.io/api/mcp",
+      "url": "https://mcp.reui.io/api/mcp?style=base-nova",
       "enabled": true
     }
   }

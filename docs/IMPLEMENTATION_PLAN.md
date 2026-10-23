@@ -108,14 +108,14 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 
 ### 0.8 Tailwind CSS 4, shadcn/ui and ReUI via MCP — `feat` · [#8](https://github.com/Caff-Core/re-open/issues/8)
 
-- [ ] Choose the primitive family and style (default proposal `base-nova`; confirm via ReUI MCP `get_agent_skill` and shadcn docs); record in ADR-012
-- [ ] Tailwind CSS 4 with the Vite plugin; theme tokens and light/dark mode
-- [ ] `packages/ui` as `@workspace/ui` holding shared primitives and tokens; `components.json` configured for the monorepo layout
-- [ ] Add the `@reui` registry to `components.json` using the config returned by ReUI MCP `get_project_context` (free registry, no licence key)
-- [ ] Set the ReUI MCP style header (`X-Reui-Style`) in `.mcp.json` and `opencode.json` to the chosen style
-- [ ] Install components only through commands returned by ReUI MCP `get_install_command` with a pinned shadcn CLI version: shadcn `button` and ReUI `badge` as smoke components
-- [ ] Smoke page renders both components using semantic tokens in light and dark themes
-- [ ] Run ReUI MCP `validate_usage` and `get_audit_checklist` on the smoke page; fix every finding
+- [x] Choose the primitive family and style (default proposal `base-nova`; confirm via ReUI MCP `get_agent_skill` and shadcn docs); record in ADR-012
+- [x] Tailwind CSS 4 with the Vite plugin; theme tokens and light/dark mode
+- [x] `packages/ui` as `@workspace/ui` holding shared primitives and tokens; `components.json` configured for the monorepo layout
+- [x] Add the `@reui` registry to `components.json` using the config returned by ReUI MCP `get_project_context` (free registry, no licence key)
+- [x] Set the ReUI MCP style (`?style=base-nova` URL parameter, equivalent to the `X-Reui-Style` header) in `.mcp.json`, `.cursor/mcp.json`, `opencode.json` and `.gemini/settings.json`
+- [x] Install components only through commands returned by ReUI MCP `get_install_command` with a pinned shadcn CLI version: shadcn `button` and ReUI `badge` as smoke components
+- [x] Smoke page renders both components using semantic tokens in light and dark themes
+- [x] Run ReUI MCP `validate_usage` and `get_audit_checklist` on the smoke page; fix every finding
 
 ### 0.9 Contracts and schema generation pipeline — `feat` · [#9](https://github.com/Caff-Core/re-open/issues/9)
 
