@@ -13,6 +13,10 @@ pub enum StoreError {
     },
     /// The migration list or recorded version is inconsistent.
     InvalidSchemaVersion,
+    /// Data failed validation before any write. `detail` names fields, never values.
+    InvalidData {
+        detail: String,
+    },
     /// Write-ahead logging could not be enabled.
     WalUnavailable,
     /// A pre-migration backup could not be written or verified; nothing was migrated.
@@ -32,6 +36,7 @@ impl fmt::Display for StoreError {
             Self::InvalidSchemaVersion => {
                 f.write_str("the checkpoint database schema version is invalid")
             }
+            Self::InvalidData { detail } => write!(f, "invalid data: {detail}"),
             Self::WalUnavailable => f.write_str("write-ahead logging could not be enabled"),
             Self::BackupFailed => {
                 f.write_str("a verified backup could not be created before migrating")

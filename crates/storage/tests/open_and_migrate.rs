@@ -27,7 +27,7 @@ fn fresh_database_is_durable_and_migrated() {
     let dir = TempDir::new().unwrap();
     let path = db(&dir);
     let store = Store::open(&path, now()).unwrap();
-    assert_eq!(store.schema_version(), 1);
+    assert_eq!(store.schema_version(), 2);
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt as _;
@@ -76,6 +76,7 @@ fn all_data_model_tables_exist() {
         "restore_actions",
         "settings",
         "schema_migrations",
+        "checkpoint_observations",
     ] {
         let count: i64 = conn
             .query_row(
@@ -125,7 +126,7 @@ fn newer_schema_is_refused_without_changes() {
             error,
             StoreError::NewerSchema {
                 found: 99,
-                supported: 1
+                supported: 2
             }
         ),
         "{error:?}"
