@@ -10,11 +10,15 @@ use std::time::Duration;
 use reopen_core::{Timestamp, WorkspaceId};
 use rusqlite::{Connection, OpenFlags, params};
 
+mod checkpoint;
 mod error;
 pub mod migrate;
+pub mod writer;
 
+pub use checkpoint::{CommitOutcome, NewCheckpoint};
 pub use error::StoreError;
 pub use migrate::{MIGRATIONS, Migration};
+pub use writer::{WriterError, WriterHandle};
 
 /// How long a statement waits on a lock before failing.
 pub const BUSY_TIMEOUT: Duration = Duration::from_secs(5);
@@ -114,6 +118,10 @@ impl Store {
     /// The connection, for storage modules in this crate.
     pub(crate) const fn conn(&self) -> &Connection {
         &self.conn
+    }
+
+    pub(crate) const fn conn_mut(&mut self) -> &mut Connection {
+        &mut self.conn
     }
 
     /// Returns the Default workspace, creating it on first open.

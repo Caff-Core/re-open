@@ -20,12 +20,20 @@ pub struct Migration {
 }
 
 /// The application's migrations, in order.
-pub const MIGRATIONS: &[Migration] = &[Migration {
-    version: 1,
-    name: "initial",
-    sql: include_str!("migrations/0001_initial.sql"),
-    destructive: false,
-}];
+pub const MIGRATIONS: &[Migration] = &[
+    Migration {
+        version: 1,
+        name: "initial",
+        sql: include_str!("migrations/0001_initial.sql"),
+        destructive: false,
+    },
+    Migration {
+        version: 2,
+        name: "checkpoint observations",
+        sql: include_str!("migrations/0002_checkpoint_observations.sql"),
+        destructive: false,
+    },
+];
 
 /// Newest schema version this build understands.
 #[must_use]

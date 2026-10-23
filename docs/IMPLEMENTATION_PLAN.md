@@ -165,9 +165,9 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.3 Single bounded writer — `feat` · [#13](https://github.com/Caff-Core/re-open/issues/13)
 
-- [ ] Dedicated writer thread with a bounded request channel; queries through the storage module
-- [ ] Atomic checkpoint transaction (checkpoint, sources, resources); success published only after commit
-- [ ] Content hash from meaningful state; unchanged state updates observation freshness only
+- [x] Dedicated writer thread with a bounded request channel; queries through the storage module
+- [x] Atomic checkpoint transaction (checkpoint, sources, resources); success published only after commit
+- [x] Content hash from meaningful state; unchanged state updates observation freshness only
 
 ### 1.4 Sessions and recovery protection — `feat` · [#14](https://github.com/Caff-Core/re-open/issues/14)
 
