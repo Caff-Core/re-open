@@ -1,0 +1,28 @@
+name: Bug
+description: Something behaves incorrectly
+title: "fix: "
+labels: ["type:fix"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Observed behaviour versus expected. Do not paste browser addresses, document paths or window titles.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "Fedora 44, GNOME 50 Wayland, Brave 1.x, Re-Open commit abc123"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs
+      render: text

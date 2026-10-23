@@ -9,13 +9,13 @@ Phased delivery plan for Re-Open. Every phase starts **not implemented**. Tick a
 | Phase N | Milestone `Phase N: <name>` | Closed when every exit criterion is ticked |
 | Task N.M | Issue, labelled `phase:N`, `type:*`, `area:*` | One issue = one branch = one PR |
 | Sub-task | Checkbox in the issue body and in this file | Tick both when done |
-| Status | Project board `Re-Open` (Todo / In Progress / In Review / Done) | PRs use `Closes #<issue>` so merging moves the card |
+| Status | [Project board `Re-Open`](https://github.com/users/Caff-Core/projects/1) (Todo / In Progress / In Review / Done) | PRs use `Closes #<issue>` so merging moves the card |
 
-**Branches:** `<type>/<issue#>-<slug>`, for example `feat/14-sqlite-migrations`, `fix/31-stale-epoch`, `docs/3-linux-retarget`. Types: `feat`, `fix`, `chore`, `docs`, `ci`, `refactor`, `test`.
+**Branches:** `<type>/<issue#>-<slug>`, for example `feat/14-sqlite-migrations`, `fix/31-stale-epoch`, `docs/3-linux-retarget`. Types: `feat`, `fix`, `chore`, `docs`, `ci`, `refactor`, `test`; `spike` tasks use `docs/` because their output is a recorded decision.
 
 **Commits and PRs:** Conventional Commits (`feat(storage): add migration runner`). No co-author trailers. Squash merge; the PR title is the squashed commit message. `main` is protected: PR required, CI must pass, no required approvals (solo project).
 
-**Updating this file:** the PR that completes a sub-task ticks it here in the same change. Replace `#TBD` with the issue number when issues are created.
+**Updating this file:** the PR that completes a sub-task ticks it here in the same change. Each task heading links its issue.
 
 Status legend: `[ ]` not started, `[x]` done with evidence. Use the issue/PR for in-progress notes rather than this file.
 
@@ -40,25 +40,25 @@ Linux transport: per-user Unix domain sockets in `$XDG_RUNTIME_DIR/reopen/` (dir
 
 Goal: a working monorepo with real command contracts, CI, a Tauri + React desktop shell rendering shadcn/ui + ReUI components, a schema-generation pipeline, and GitHub tracking. No product logic.
 
-### 0.1 Repository baseline — `chore` · #TBD
-- [ ] Commit the existing documentation pack and agent configuration to `main` (initial commit pushed directly; the repository is empty so no PR is possible)
-- [ ] Add `LICENSE` (MIT, copyright holder Caff-Core)
-- [ ] Add `.gitignore` (Node, pnpm, Vite, Rust `target/`, Tauri bundles, `.env*.local`, editor files, local dev data directories)
-- [ ] Add `.editorconfig` and `.gitattributes` (LF line endings, generated files marked `linguist-generated`)
-- [ ] Set remote `git@github.com:Caff-Core/re-open.git` and push
+### 0.1 Repository baseline — `chore` · [#1](https://github.com/Caff-Core/re-open/issues/1)
+- [x] Commit the existing documentation pack and agent configuration to `main` (initial commit pushed directly; the repository is empty so no PR is possible)
+- [x] Add `LICENSE` (MIT, copyright holder Caff-Core)
+- [x] Add `.gitignore` (Node, pnpm, Vite, Rust `target/`, Tauri bundles, `.env*.local`, editor files, local dev data directories)
+- [x] Add `.editorconfig` and `.gitattributes` (LF line endings, generated files marked `linguist-generated`)
+- [x] Set remote `git@github.com:Caff-Core/re-open.git` and push
 - [ ] Enable branch protection on `main`: PR required, required status checks (added in 0.10), no force-push, no deletion, 0 required approvals
-- [ ] Repository settings: squash merge only, PR title as default commit message, auto-delete merged branches
+- [x] Repository settings: squash merge only, PR title as default commit message, auto-delete merged branches
 
-### 0.2 GitHub tracking setup — `chore` · #TBD
-- [ ] Create labels: `phase:0`…`phase:7`; `type:feat|fix|chore|docs|ci|refactor|test|spike`; `area:engine|storage|protocol|browser|extension|desktop|ui|platform-linux|platform-windows|platform-macos|ci|docs`
-- [ ] Create milestones for Phases 0–7
-- [ ] Create Project (v2) board `Re-Open` with Status (Todo / In Progress / In Review / Done) and Phase fields; link it to the repository
-- [ ] Create one issue per task in this file with its sub-task checklist; add every issue to the board
-- [ ] Add `.github/ISSUE_TEMPLATE/task.yml` (phase, area, sub-tasks, exit evidence) and `bug.yml`
-- [ ] Add `.github/pull_request_template.md` (Conventional Commit title reminder, `Closes #`, checks run, invariants affected, docs updated)
-- [ ] Replace every `#TBD` in this file with the created issue numbers
+### 0.2 GitHub tracking setup — `chore` · [#2](https://github.com/Caff-Core/re-open/issues/2)
+- [x] Create labels: `phase:0`…`phase:7`; `type:feat|fix|chore|docs|ci|refactor|test|spike`; `area:engine|storage|protocol|browser|extension|desktop|ui|platform-linux|platform-windows|platform-macos|ci|docs`
+- [x] Create milestones for Phases 0–7
+- [x] Create Project (v2) board `Re-Open` with Status (Todo / In Progress / In Review / Done) and Phase fields; link it to the repository
+- [x] Create one issue per task in this file with its sub-task checklist; add every issue to the board
+- [x] Add `.github/ISSUE_TEMPLATE/task.yml` (phase, area, sub-tasks, exit evidence) and `bug.yml`
+- [x] Add `.github/pull_request_template.md` (Conventional Commit title reminder, `Closes #`, checks run, invariants affected, docs updated)
+- [x] Replace every `#TBD` in this file with the created issue numbers
 
-### 0.3 Retarget documentation to Linux/GNOME first — `docs` · #TBD
+### 0.3 Retarget documentation to Linux/GNOME first — `docs` · [#3](https://github.com/Caff-Core/re-open/issues/3)
 - [ ] `README.md` and `AGENTS.md`: product name Re-Open, Linux/GNOME + Brave first, Windows as a later adapter
 - [ ] `docs/DECISIONS.md`: ADR-008 marked superseded; add ADR-009 Linux/GNOME/Brave first, ADR-010 name and identifiers, ADR-011 schema generator, ADR-012 shadcn primitive family and ReUI style, ADR-013 MIT licence
 - [ ] `docs/ARCHITECTURE.md` and `docs/PROTOCOL.md`: Unix sockets, `SO_PEERCRED`, socket paths; named pipes moved to the Windows adapter section
@@ -69,13 +69,13 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [ ] `docs/TESTING_RELEASE.md`: Linux CI runners, native validation on the Fedora reference machine
 - [ ] `docs/UI.md`: GNOME tray limitation noted (see 4.1)
 
-### 0.4 Toolchain pinning — `chore` · #TBD
+### 0.4 Toolchain pinning — `chore` · [#4](https://github.com/Caff-Core/re-open/issues/4)
 - [ ] Verify current stable versions and compatibility of Node, pnpm, Rust, Tauri 2, React, Vite, Tailwind CSS 4, shadcn CLI and ReUI against official documentation; record the result in `docs/DECISIONS.md`
 - [ ] `rust-toolchain.toml` (exact stable version, `rustfmt` and `clippy` components)
 - [ ] `.node-version`, root `package.json` `packageManager` and `engines` fields
 - [ ] Record exact versions in `README.md` prerequisites, including Fedora system packages (`webkit2gtk4.1-devel`, `gtk3-devel`, `libsoup3-devel`, `openssl-devel`, `librsvg2-devel`, `libappindicator-gtk3-devel`)
 
-### 0.5 pnpm workspace and TypeScript tooling — `chore` · #TBD
+### 0.5 pnpm workspace and TypeScript tooling — `chore` · [#5](https://github.com/Caff-Core/re-open/issues/5)
 - [ ] `pnpm-workspace.yaml` covering `apps/*` and `packages/*`; commit `pnpm-lock.yaml`
 - [ ] Shared strict `tsconfig.base.json` (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
 - [ ] ESLint flat config (TypeScript, React hooks, import rules) and Prettier
@@ -84,13 +84,13 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [ ] Scripts for later phases (`dev:agent`, `dev:extension`, `package:linux`) exist and exit non-zero with a message naming the phase that implements them
 - [ ] No unbounded `latest` versions in committed manifests
 
-### 0.6 Cargo workspace — `chore` · #TBD
+### 0.6 Cargo workspace — `chore` · [#6](https://github.com/Caff-Core/re-open/issues/6)
 - [ ] Root `Cargo.toml` workspace with `crates/*` and `apps/desktop/src-tauri`; shared `[workspace.package]`, `[workspace.dependencies]` and `[workspace.lints]` (`unsafe_code = "forbid"` by default, overridden only in platform crates)
 - [ ] `crates/core` with a minimal domain type and one unit test (smoke only; real types in Phase 1)
 - [ ] `rustfmt.toml`, clippy configuration; commit `Cargo.lock`
 - [ ] `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` and `cargo test --workspace` pass locally
 
-### 0.7 Tauri 2 + React desktop scaffold — `feat` · #TBD
+### 0.7 Tauri 2 + React desktop scaffold — `feat` · [#7](https://github.com/Caff-Core/re-open/issues/7)
 - [ ] Scaffold `apps/desktop` (React + TypeScript + Vite) and `apps/desktop/src-tauri` following current Tauri 2 documentation
 - [ ] Set identifier `com.caffcore.reopen`, product name, window defaults
 - [ ] Lock down capabilities: no shell, fs, http or opener plugins; strict CSP; no remote content or arbitrary navigation
@@ -98,7 +98,7 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [ ] `pnpm dev:desktop` opens a window on GNOME Wayland; document any WebKitGTK environment workaround required on this machine
 - [ ] `pnpm build` builds the frontend; `cargo build -p` for the shell succeeds
 
-### 0.8 Tailwind CSS 4, shadcn/ui and ReUI via MCP — `feat` · #TBD
+### 0.8 Tailwind CSS 4, shadcn/ui and ReUI via MCP — `feat` · [#8](https://github.com/Caff-Core/re-open/issues/8)
 - [ ] Choose the primitive family and style (default proposal `base-nova`; confirm via ReUI MCP `get_agent_skill` and shadcn docs); record in ADR-012
 - [ ] Tailwind CSS 4 with the Vite plugin; theme tokens and light/dark mode
 - [ ] `packages/ui` as `@workspace/ui` holding shared primitives and tokens; `components.json` configured for the monorepo layout
@@ -108,14 +108,14 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [ ] Smoke page renders both components using semantic tokens in light and dark themes
 - [ ] Run ReUI MCP `validate_usage` and `get_audit_checklist` on the smoke page; fix every finding
 
-### 0.9 Contracts and schema generation pipeline — `feat` · #TBD
+### 0.9 Contracts and schema generation pipeline — `feat` · [#9](https://github.com/Caff-Core/re-open/issues/9)
 - [ ] `packages/contracts/schema/` with the canonical protocol envelope schema (version 1) and error schema
 - [ ] Generate Rust types with `typify` into `crates/protocol` and TypeScript types with `json-schema-to-typescript` into `packages/contracts`; commit generated output
 - [ ] Runtime validation wired: `ajv` in TypeScript, `jsonschema` plus explicit size and unknown-field checks in Rust
 - [ ] `fixtures/protocol/` with valid, malformed, missing-field, unknown-version and oversized envelope fixtures; tests on both sides consume the same fixtures
 - [ ] `pnpm contracts:generate` regenerates; `pnpm contracts:check` fails on drift
 
-### 0.10 Continuous integration — `ci` · #TBD
+### 0.10 Continuous integration — `ci` · [#10](https://github.com/Caff-Core/re-open/issues/10)
 - [ ] `.github/workflows/ci.yml` on `ubuntu-latest` for PRs and pushes to `main`
 - [ ] Job `node`: `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`, `contracts:check`
 - [ ] Job `rust`: install Tauri system dependencies, `cargo fmt --check`, `clippy -D warnings`, `cargo test --workspace`
@@ -136,51 +136,51 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 
 Goal: platform-independent agent that captures from fake providers, persists checkpoints atomically, protects the previous session and exposes a CLI.
 
-### 1.1 Core domain types — `feat` · #TBD
+### 1.1 Core domain types — `feat` · [#11](https://github.com/Caff-Core/re-open/issues/11)
 - [ ] IDs, timestamps (UTC) and monotonic deadlines
 - [ ] Checkpoint, resource kinds, completeness, source states (`complete`, `partial`, `unavailable`, `stale`, `excluded`, `unsupported`)
 - [ ] Adapter capability model and versioned resource payloads
 - [ ] Unit tests for state and completeness rules
 
-### 1.2 Storage and migrations — `feat` · #TBD
+### 1.2 Storage and migrations — `feat` · [#12](https://github.com/Caff-Core/re-open/issues/12)
 - [ ] `crates/storage` with rusqlite; foreign keys, WAL, `synchronous=FULL`, bounded busy timeout
 - [ ] Numbered migration runner with `schema_migrations`; schema v1 tables from `docs/DATA_MODEL.md`; default workspace
 - [ ] Refuse writes on a newer schema; never create an empty replacement on corruption
 - [ ] Verified backup via the SQLite backup API before destructive migrations
 - [ ] Migration tests against prior versions
 
-### 1.3 Single bounded writer — `feat` · #TBD
+### 1.3 Single bounded writer — `feat` · [#13](https://github.com/Caff-Core/re-open/issues/13)
 - [ ] Dedicated writer thread with a bounded request channel; queries through the storage module
 - [ ] Atomic checkpoint transaction (checkpoint, sources, resources); success published only after commit
 - [ ] Content hash from meaningful state; unchanged state updates observation freshness only
 
-### 1.4 Sessions and recovery protection — `feat` · #TBD
+### 1.4 Sessions and recovery protection — `feat` · [#14](https://github.com/Caff-Core/re-open/issues/14)
 - [ ] Session records with clean-exit marker
 - [ ] Startup transaction creates the pending recovery candidate and pin before capture starts
 - [ ] Multiple unresolved candidates; dismiss and resolve release only their own pin
 
-### 1.5 Capture scheduler and fake provider — `feat` · #TBD
+### 1.5 Capture scheduler and fake provider — `feat` · [#15](https://github.com/Caff-Core/re-open/issues/15)
 - [ ] Tokio scheduler, 60-second default, serialised cycles with coalesced ticks
 - [ ] Provider deadlines (5 s each, 10 s total) producing partial status with stable error codes
 - [ ] `platform` crate traits plus a configurable fake provider (complete, partial, timeout, empty)
 
-### 1.6 Manual checkpoints, pins and retention — `feat` · #TBD
+### 1.6 Manual checkpoints, pins and retention — `feat` · [#16](https://github.com/Caff-Core/re-open/issues/16)
 - [ ] "Save now" explicit checkpoints; pin/unpin with multiple reasons
 - [ ] Retention by age and count on eligible unpinned automatic checkpoints only, as a separate bounded transaction
 - [ ] Storage budget warning when pins prevent compliance
 
-### 1.7 Memory sampling interface — `feat` · #TBD
+### 1.7 Memory sampling interface — `feat` · [#17](https://github.com/Caff-Core/re-open/issues/17)
 - [ ] Fakeable memory sampler trait; `sysinfo` implementation; separate 5-second schedule
 - [ ] Linux pressure stall information (`/proc/pressure/memory`) recorded as an additional signal where available
 
-### 1.8 Agent binary, local IPC and CLI — `feat` · #TBD
+### 1.8 Agent binary, local IPC and CLI — `feat` · [#18](https://github.com/Caff-Core/re-open/issues/18)
 - [ ] `crates/agent` binary `reopen-agent` with per-user singleton lock and readiness handshake
 - [ ] XDG data directory; isolated development directory used by `pnpm dev:agent`
 - [ ] Desktop-role Unix socket endpoint (`0600`, `SO_PEERCRED` UID check, 4-byte little-endian framing, 16 outstanding requests)
 - [ ] CLI subcommands: `status`, `capture`, `history`, `checkpoint show`
 - [ ] Redacted `tracing` logging with rotation (3 × 1 MiB); no addresses, paths or titles
 
-### 1.9 Durability test suite — `test` · #TBD
+### 1.9 Durability test suite — `test` · [#19](https://github.com/Caff-Core/re-open/issues/19)
 - [ ] Kill the agent process at transaction boundaries; prior or new checkpoint survives, never half-written
 - [ ] Repeated restarts keep every pending candidate protected
 - [ ] Full-disk, read-only and corrupt database simulations
@@ -197,33 +197,33 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 Goal: discover visible GNOME applications on Wayland and reopen user-selected apps safely.
 
-### 2.1 Spike: window enumeration on GNOME Wayland — `spike` · #TBD
+### 2.1 Spike: window enumeration on GNOME Wayland — `spike` · [#20](https://github.com/Caff-Core/re-open/issues/20)
 - [ ] Evaluate `org.gnome.Shell.Introspect` availability and access rules on GNOME 50
 - [ ] Evaluate a minimal companion GNOME Shell extension exposing a read-only D-Bus window list
 - [ ] Evaluate XWayland/X11 `_NET_CLIENT_LIST` coverage and a process + `.desktop` matching fallback
 - [ ] Record capability matrix and chosen approach as an ADR
 
-### 2.2 `platform-linux` application identity — `feat` · #TBD
+### 2.2 `platform-linux` application identity — `feat` · [#21](https://github.com/Caff-Core/re-open/issues/21)
 - [ ] Resolve app identity from freedesktop `.desktop` entries (system, user, Flatpak exports)
 - [ ] Validate executable references; label Flatpak and Snap apps by app ID
 - [ ] Exclude system/background processes and the configured exclusion list
 
-### 2.3 Window discovery adapter — `feat` · #TBD
+### 2.3 Window discovery adapter — `feat` · [#22](https://github.com/Caff-Core/re-open/issues/22)
 - [ ] Implement the approach chosen in 2.1 (including the GNOME Shell extension under `apps/gnome-shell-extension` if selected)
 - [ ] Bounded probe workers and timeouts; unsupported capability reported, never guessed
 
-### 2.4 Conservative launch adapter — `feat` · #TBD
+### 2.4 Conservative launch adapter — `feat` · [#23](https://github.com/Caff-Core/re-open/issues/23)
 - [ ] Launch from validated desktop entries with argument arrays (field codes stripped; never a shell string); `flatpak run <app-id>` for Flatpak apps
 - [ ] Reject changed or missing executables instead of searching for same-named binaries
 
-### 2.5 Restore plans and action journal — `feat` · #TBD
+### 2.5 Restore plans and action journal — `feat` · [#24](https://github.com/Caff-Core/re-open/issues/24)
 - [ ] `restore.preview` with plan ID, selections, warnings and expiry; invalidation on exclusion/resource changes
 - [ ] Persisted attempt marker before each side effect; result afterwards
 - [ ] Serial launches with a 2-second minimum gap, memory check before each action, cancellation
 - [ ] Reconcile `launching` actions on restart as `uncertain`; never replay
 - [ ] App-level duplicate detection (`already_open`)
 
-### 2.6 Native validation on the reference machine — `test` · #TBD
+### 2.6 Native validation on the reference machine — `test` · [#25](https://github.com/Caff-Core/re-open/issues/25)
 - [ ] Explicitly selected apps reopen; unselected apps do not
 - [ ] Changed or missing executables fail safely
 - [ ] Restart during launch does not duplicate actions
@@ -239,53 +239,53 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 Goal: Brave profiles captured end to end through the extension and native host, with user-approved browser restore; Firefox follows on the same codebase.
 
-### 3.1 Browser protocol schemas — `feat` · #TBD
+### 3.1 Browser protocol schemas — `feat` · [#26](https://github.com/Caff-Core/re-open/issues/26)
 - [ ] Schemas for every browser operation in `docs/PROTOCOL.md`, limits encoded
 - [ ] Shared fixtures: valid, malformed, duplicate, oversized, out-of-order, stale epoch
 
-### 3.2 Native host bridge — `feat` · #TBD
+### 3.2 Native host bridge — `feat` · [#27](https://github.com/Caff-Core/re-open/issues/27)
 - [ ] `crates/native-host` binary `reopen-host`: native-endian framing on stdio, oversize rejection before allocation, redacted stderr
 - [ ] Forward to the agent's browser-only socket; report unavailable when the agent is absent; never launch anything
 
-### 3.3 Agent browser endpoint and ingestion — `feat` · #TBD
+### 3.3 Agent browser endpoint and ingestion — `feat` · [#28](https://github.com/Caff-Core/re-open/issues/28)
 - [ ] Separate browser-role socket with operation allowlist
 - [ ] Leases and epochs; staging with 30-second expiry and one staged capture per source
 - [ ] Chunk commit validation and idempotent ingestion IDs; acknowledge only after commit
 - [ ] Private records rejected
 
-### 3.4 Extension scaffold (Brave) — `feat` · #TBD
+### 3.4 Extension scaffold (Brave) — `feat` · [#29](https://github.com/Caff-Core/re-open/issues/29)
 - [ ] `apps/extension` with its own Vite config, MV3 manifest, service worker and minimal popup
 - [ ] Permissions limited to `tabs`, `storage`, `nativeMessaging`, `alarms`
 - [ ] `pnpm dev:extension` watch-builds an unpacked extension
 
-### 3.5 Extension capture — `feat` · #TBD
+### 3.5 Extension capture — `feat` · [#30](https://github.com/Caff-Core/re-open/issues/30)
 - [ ] Event listeners mark dirty; debounced full enumeration; chunked submission
 - [ ] Private/incognito excluded at every stage
 - [ ] Persisted source identity, pause state and latest pending capture only; alarm-based reconciliation after worker restart
 - [ ] Reconnect with capped exponential backoff and jitter
 
-### 3.6 Enrollment and pairing — `feat` · #TBD
+### 3.6 Enrollment and pairing — `feat` · [#31](https://github.com/Caff-Core/re-open/issues/31)
 - [ ] Source UUID per profile; enrollment request and approval (CLI until Phase 4 UI)
 - [ ] Credentials stored via Secret Service (libsecret); revoke and re-enroll
 - [ ] Duplicate source UUID detection requiring re-enrollment
 
-### 3.7 Native host registration for Brave — `feat` · #TBD
+### 3.7 Native host registration for Brave — `feat` · [#32](https://github.com/Caff-Core/re-open/issues/32)
 - [ ] Per-user host manifest in `~/.config/BraveSoftware/Brave-Browser/NativeMessagingHosts/` with explicit `allowed_origins`
 - [ ] Separate development and production extension IDs; development registration never replaces production
 - [ ] Registration and unregistration script that touches only entries owned by this app
 
-### 3.8 Browser restore dispatch — `feat` · #TBD
+### 3.8 Browser restore dispatch — `feat` · [#33](https://github.com/Caff-Core/re-open/issues/33)
 - [ ] Jobs only from approved persisted plans, addressed to an enrolled connected source
 - [ ] Poll/ack over the native port; batches of five with pacing; per-tab outcomes
 - [ ] Job deduplication across worker restarts; uncertain outcomes reconciled
 - [ ] Only `http:`, `https:` and controlled blank tabs restored
 
-### 3.9 Firefox support — `feat` · #TBD
+### 3.9 Firefox support — `feat` · [#34](https://github.com/Caff-Core/re-open/issues/34)
 - [ ] Firefox manifest variant with `browser_specific_settings.gecko.id`
 - [ ] API differences isolated behind a small browser-API module
 - [ ] Host manifest in `~/.mozilla/native-messaging-hosts/` with `allowed_extensions`
 
-### 3.10 Browser failure test suite — `test` · #TBD
+### 3.10 Browser failure test suite — `test` · [#35](https://github.com/Caff-Core/re-open/issues/35)
 - [ ] Worker restart, duplicate commit, missing chunk, private tabs, stale epochs, source disconnect, host absence
 - [ ] Forged launch commands, source IDs and unknown kinds rejected
 
@@ -300,44 +300,44 @@ Goal: Brave profiles captured end to end through the extension and native host, 
 
 Goal: tray-first desktop shell with on-demand UI wired to the existing agent.
 
-### 4.1 Spike: tray on GNOME — `spike` · #TBD
+### 4.1 Spike: tray on GNOME — `spike` · [#36](https://github.com/Caff-Core/re-open/issues/36)
 - [ ] Confirm behaviour without the AppIndicator/KStatusNotifierItem GNOME extension (stock GNOME has no tray)
 - [ ] Decide fallback: background-app portal, persistent notification or window-only; record ADR
 
-### 4.2 Shell lifecycle — `feat` · #TBD
+### 4.2 Shell lifecycle — `feat` · [#37](https://github.com/Caff-Core/re-open/issues/37)
 - [ ] Tray-only mode; webview created on demand and destroyed on close
 - [ ] Per-user shell singleton; ensure one agent with readiness handshake
 - [ ] Explicit "Quit background agent" with stop/suppression state
 
-### 4.3 Login startup — `feat` · #TBD
+### 4.3 Login startup — `feat` · [#38](https://github.com/Caff-Core/re-open/issues/38)
 - [ ] XDG autostart entry (via Tauri autostart plugin if it fits) launching tray mode; opt-in during setup
 - [ ] No automatic restore on login
 
-### 4.4 Narrow Tauri commands — `feat` · #TBD
+### 4.4 Narrow Tauri commands — `feat` · [#39](https://github.com/Caff-Core/re-open/issues/39)
 - [ ] Typed commands forwarding to the desktop socket; no second storage path
 - [ ] Capabilities limited to these commands
 
-### 4.5 App shell and theme — `feat` · #TBD
+### 4.5 App shell and theme — `feat` · [#40](https://github.com/Caff-Core/re-open/issues/40)
 - [ ] Layout and navigation using ReUI/shadcn components installed via MCP commands
 - [ ] Empty, loading (Skeleton) and inline error with Retry for every data region
 
-### 4.6 Overview screen — `feat` · #TBD
+### 4.6 Overview screen — `feat` · [#41](https://github.com/Caff-Core/re-open/issues/41)
 - [ ] Capture status, last saved time, recovery candidate, memory status, Save now
 
-### 4.7 Checkpoints screen — `feat` · #TBD
+### 4.7 Checkpoints screen — `feat` · [#42](https://github.com/Caff-Core/re-open/issues/42)
 - [ ] ReUI `data-grid` with timestamp, session, completeness, source freshness, pins; protected-delete confirmation
 
-### 4.8 Recovery preview — `feat` · #TBD
+### 4.8 Recovery preview — `feat` · [#43](https://github.com/Caff-Core/re-open/issues/43)
 - [ ] App/resource tree and browser windows/tabs with stable selection during live updates
 - [ ] Capability warnings, skipped schemes, missing paths, uncertain duplicates; restore button states item count
 
-### 4.9 Restore progress — `feat` · #TBD
+### 4.9 Restore progress — `feat` · [#44](https://github.com/Caff-Core/re-open/issues/44)
 - [ ] Current action, queue, memory pause, cancel and per-item outcomes
 
-### 4.10 Settings — `feat` · #TBD
+### 4.10 Settings — `feat` · [#45](https://github.com/Caff-Core/re-open/issues/45)
 - [ ] Startup, interval, exclusions, retention, paired browsers (enrollment approval), privacy controls, remove matching history
 
-### 4.11 Accessibility and lifecycle tests — `test` · #TBD
+### 4.11 Accessibility and lifecycle tests — `test` · [#46](https://github.com/Caff-Core/re-open/issues/46)
 - [ ] Keyboard navigation, focus, accessible names, reduced motion, dark/light
 - [ ] Closing the window leaves capture active; UI crash loses no checkpoints
 
@@ -350,25 +350,25 @@ Goal: tray-first desktop shell with on-demand UI wired to the existing agent.
 
 ## Phase 5 — Development resources and memory pressure
 
-### 5.1 VS Code adapter — `feat` · #TBD
+### 5.1 VS Code adapter — `feat` · [#47](https://github.com/Caff-Core/re-open/issues/47)
 - [ ] Spike observable open-folder/workspace state; record ADR
 - [ ] Discover and restore with adapter-specific argument arrays (`--folder-uri` / workspace file)
 
-### 5.2 Zed adapter — `feat` · #TBD
+### 5.2 Zed adapter — `feat` · [#48](https://github.com/Caff-Core/re-open/issues/48)
 - [ ] Spike observable project state; implement only what is externally observable
 
-### 5.3 Android Studio capability spike — `spike` · #TBD
+### 5.3 Android Studio capability spike — `spike` · [#49](https://github.com/Caff-Core/re-open/issues/49)
 - [ ] Investigate open/recent project state (`~/.config/Google/AndroidStudio*/options`) and launcher arguments
 - [ ] Implement adapter only if open-project state is provable; otherwise app-only with honest label
 
-### 5.4 Nautilus folder adapter — `spike` · #TBD
+### 5.4 Nautilus folder adapter — `spike` · [#50](https://github.com/Caff-Core/re-open/issues/50)
 - [ ] Determine whether open folders are externally observable on Wayland; implement or label unsupported
 
-### 5.5 Memory pressure during restore — `feat` · #TBD
+### 5.5 Memory pressure during restore — `feat` · [#51](https://github.com/Caff-Core/re-open/issues/51)
 - [ ] Thresholds on available memory plus PSI with hysteresis; pause/resume with explanation
 - [ ] Calibrate thresholds on the 15 GiB reference machine
 
-### 5.6 Workload profiling — `test` · #TBD
+### 5.6 Workload profiling — `test` · [#52](https://github.com/Caff-Core/re-open/issues/52)
 - [ ] Profile the Android build workload with the agent running; record measurements against the performance budget
 
 ### Phase 5 exit criteria
@@ -380,25 +380,25 @@ Goal: tray-first desktop shell with on-demand UI wired to the existing agent.
 
 ## Phase 6 — Linux packaging and recovery hardening
 
-### 6.1 Linux packages — `feat` · #TBD
+### 6.1 Linux packages — `feat` · [#53](https://github.com/Caff-Core/re-open/issues/53)
 - [ ] RPM and AppImage via the Tauri bundler, bundling `reopen-agent` and `reopen-host` as external binaries
 - [ ] `pnpm package:linux` implemented
 
-### 6.2 Per-user install, repair and uninstall — `feat` · #TBD
+### 6.2 Per-user install, repair and uninstall — `feat` · [#54](https://github.com/Caff-Core/re-open/issues/54)
 - [ ] Autostart entry and native-host registration repair
 - [ ] Uninstall removes only owned entries and asks whether to retain history; explicit credential behaviour
 
-### 6.3 Extension packaging — `feat` · #TBD
+### 6.3 Extension packaging — `feat` · [#55](https://github.com/Caff-Core/re-open/issues/55)
 - [ ] Chromium package for Brave (Chrome Web Store compatible) with matching allowlisted ID
 - [ ] Firefox XPI signed through AMO (unlisted)
 
-### 6.4 Version compatibility — `feat` · #TBD
+### 6.4 Version compatibility — `feat` · [#56](https://github.com/Caff-Core/re-open/issues/56)
 - [ ] Application, protocol, schema and extension compatibility matrix and runtime checks
 
-### 6.5 Release workflow — `ci` · #TBD
+### 6.5 Release workflow — `ci` · [#57](https://github.com/Caff-Core/re-open/issues/57)
 - [ ] Tag-triggered GitHub Actions release publishing artifacts; unsigned artifacts labelled
 
-### 6.6 Hardening validation — `test` · #TBD
+### 6.6 Hardening validation — `test` · [#58](https://github.com/Caff-Core/re-open/issues/58)
 - [ ] Clean user account install, login startup, `kill -9`, repeated reboot, upgrade with retained history, uninstall, offline use
 - [ ] Publish actual limitations and measured resource use
 
@@ -412,19 +412,19 @@ Goal: tray-first desktop shell with on-demand UI wired to the existing agent.
 
 Each task is an epic; break it into sub-issues when started. Order may change based on demand.
 
-### 7.1 X11 and other Linux desktops — `feat` · #TBD
+### 7.1 X11 and other Linux desktops — `feat` · [#59](https://github.com/Caff-Core/re-open/issues/59)
 - [ ] X11 window discovery; KDE Plasma via KWin scripting or D-Bus
 
-### 7.2 Additional Chromium browsers — `feat` · #TBD
+### 7.2 Additional Chromium browsers — `feat` · [#60](https://github.com/Caff-Core/re-open/issues/60)
 - [ ] Chrome, Chromium and Edge native installs: host manifest paths and IDs
 
-### 7.3 Flatpak browsers — `spike` · #TBD
+### 7.3 Flatpak browsers — `spike` · [#61](https://github.com/Caff-Core/re-open/issues/61)
 - [ ] Investigate native messaging from Flatpak browsers (sandbox host spawning)
 
-### 7.4 Windows 11 adapter — `feat` · #TBD
+### 7.4 Windows 11 adapter — `feat` · [#62](https://github.com/Caff-Core/re-open/issues/62)
 - [ ] `platform-windows`: visible windows, named pipes restricted to user SID, registry host registration, installer; per original Windows design
 
-### 7.5 macOS adapter — `feat` · #TBD
+### 7.5 macOS adapter — `feat` · [#63](https://github.com/Caff-Core/re-open/issues/63)
 - [ ] Window discovery, launch, Unix sockets, host registration, signed bundle
 
 ---
