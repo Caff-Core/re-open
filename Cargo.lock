@@ -2690,6 +2690,12 @@ dependencies = [
 [[package]]
 name = "reopen-core"
 version = "0.1.0"
+dependencies = [
+ "jiff",
+ "serde",
+ "serde_json",
+ "uuid",
+]
 
 [[package]]
 name = "reopen-desktop"
