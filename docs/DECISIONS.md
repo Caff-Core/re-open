@@ -85,6 +85,7 @@ Consequences: local IPC uses per-user Unix domain sockets verified with `SO_PEER
 | ReUI                                  | registry (unversioned source) | Free `@reui` registry items are copied as source; Base UI and Radix builds exist (style choice in ADR-012).                       |
 | Vitest                                | 5.0.5                         | Supports Vite 6–8 and `@types/node` 24.                                                                                           |
 | `rusqlite`                            | 0.40.2                        | `bundled` SQLite (same engine everywhere, STRICT tables) and `backup` for verified pre-migration copies.                          |
+| `sysinfo`                             | 0.39.6                        | Memory totals (`system` feature only, memory refresh only).                                                                       |
 | `jiff`                                | 0.2.38                        | UTC timestamps with RFC 3339 serde in `reopen-core`; timezone-aware local display later.                                          |
 | ESLint / typescript-eslint / Prettier | 10.13.0 / 8.72.0 / 3.9.10     | Confirm plugin compatibility in task 0.5.                                                                                         |
 

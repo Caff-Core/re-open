@@ -189,8 +189,8 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.7 Memory sampling interface — `feat` · [#17](https://github.com/Caff-Core/re-open/issues/17)
 
-- [ ] Fakeable memory sampler trait; `sysinfo` implementation; separate 5-second schedule
-- [ ] Linux pressure stall information (`/proc/pressure/memory`) recorded as an additional signal where available
+- [x] Fakeable memory sampler trait; `sysinfo` implementation; separate 5-second schedule
+- [x] Linux pressure stall information (`/proc/pressure/memory`) recorded as an additional signal where available
 
 ### 1.8 Agent binary, local IPC and CLI — `feat` · [#18](https://github.com/Caff-Core/re-open/issues/18)
 
