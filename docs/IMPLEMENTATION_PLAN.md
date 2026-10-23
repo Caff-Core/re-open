@@ -150,10 +150,10 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.1 Core domain types — `feat` · [#11](https://github.com/Caff-Core/re-open/issues/11)
 
-- [ ] IDs, timestamps (UTC) and monotonic deadlines
-- [ ] Checkpoint, resource kinds, completeness, source states (`complete`, `partial`, `unavailable`, `stale`, `excluded`, `unsupported`)
-- [ ] Adapter capability model and versioned resource payloads
-- [ ] Unit tests for state and completeness rules
+- [x] IDs, timestamps (UTC) and monotonic deadlines
+- [x] Checkpoint, resource kinds, completeness, source states (`complete`, `partial`, `unavailable`, `stale`, `excluded`, `unsupported`)
+- [x] Adapter capability model and versioned resource payloads
+- [x] Unit tests for state and completeness rules
 
 ### 1.2 Storage and migrations — `feat` · [#12](https://github.com/Caff-Core/re-open/issues/12)
 
