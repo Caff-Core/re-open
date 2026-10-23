@@ -27,7 +27,7 @@ A local desktop utility that checkpoints open applications and browser tabs, the
 2. [Product requirements](docs/PRODUCT.md): scope, user flows and acceptance criteria.
 3. [Architecture](docs/ARCHITECTURE.md): processes, boundaries and lifecycle.
 4. [Monorepo](docs/MONOREPO.md): proposed layout and tooling.
-5. [Implementation plan](docs/IMPLEMENTATION_PLAN.md): ordered delivery milestones.
+5. [Implementation plan](docs/IMPLEMENTATION_PLAN.md): phased tasks and tracking.
 
 ## Reference documents
 

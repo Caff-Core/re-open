@@ -2,9 +2,9 @@
 
 ## Purpose and authority
 
-Build the product described in [README.md](README.md) and [docs/PRODUCT.md](docs/PRODUCT.md). These are project instructions for AI coding agents, including Claude Code and GPT-Astra. User instructions take precedence. Read the architecture, milestone plan and documents relevant to your change before editing.
+Build the product described in [README.md](README.md) and [docs/PRODUCT.md](docs/PRODUCT.md). These are project instructions for AI coding agents, including Claude Code and GPT-Astra. User instructions take precedence. Read the architecture, implementation plan and documents relevant to your change before editing.
 
-This repository initially contains documentation only. Do not represent proposed modules, scripts or tests as existing. Start at milestone 0 unless instructed otherwise.
+The repository is being bootstrapped; check [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for what exists. Do not represent proposed modules, scripts or tests as existing. Work on the next open task unless instructed otherwise.
 
 ## Fixed decisions
 
@@ -44,12 +44,19 @@ This repository initially contains documentation only. Do not represent proposed
 
 ## Workflow and completion
 
-1. Inspect the repository and current milestone status.
+1. Inspect the repository and the current phase/task status in the plan and its GitHub issue.
 2. Identify affected invariants and any unresolved platform assumption.
 3. Implement one useful slice, including error paths.
 4. Run checks appropriate to the slice; document environmental blockers precisely.
-5. Update milestone status and relevant documentation.
+5. Tick completed sub-tasks in both the plan file and the issue; update relevant documentation.
 6. Report what changed, actual checks run, remaining limitations and the next concrete step.
+
+### Git and GitHub
+
+- One task = one issue = one branch = one PR. Branch `<type>/<issue#>-<slug>` (`feat`, `fix`, `chore`, `docs`, `ci`, `refactor`, `test`; spikes use `docs`).
+- Conventional Commits. No co-author trailers in commit messages.
+- PR title is a Conventional Commit (it becomes the squash commit) and the body contains `Closes #<issue>`. `main` is protected; never push to it directly.
+- Before starting, check for an existing branch or open PR for the issue so parallel sessions do not duplicate work.
 
 Never claim tests passed unless executed. Do not fabricate working native integrations from mocks. No requirement to delegate to subagents.
 

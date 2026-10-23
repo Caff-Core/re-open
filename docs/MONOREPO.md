@@ -50,7 +50,7 @@ Use one root pnpm workspace for `apps/*` and `packages/*`, and one root Cargo wo
 
 Desktop uses `@workspace/ui` and `@workspace/contracts`. Extension uses contracts and may use a small subset of UI. Avoid bundling the entire desktop design system into the extension service worker. No imports between app source trees.
 
-Canonical protocol schemas live in `packages/contracts/schema`; generated Rust and TypeScript are committed and checked for drift. Pick and record a generator during bootstrap. Enforce unknown-field and size rules explicitly; generated types alone do not validate untrusted input.
+Canonical protocol schemas live in `packages/contracts/schema`; generated Rust and TypeScript are committed and checked for drift. The generator choice is recorded in [ADR-011](DECISIONS.md#adr-011-schema-generator). Enforce unknown-field and size rules explicitly; generated types alone do not validate untrusted input.
 
 ## Frontend choices
 
@@ -58,7 +58,7 @@ React with TypeScript strict mode and Vite. Tailwind CSS 4, shadcn/ui and ReUI w
 
 ## Root command contract
 
-Implement these scripts in milestone 0; they are not currently executable:
+Implement these scripts in Phase 0 (tasks 0.5–0.10); scripts for later phases fail with a message naming the phase that implements them:
 
 | Command | Required behavior |
 | --- | --- |
