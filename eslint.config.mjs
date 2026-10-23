@@ -46,7 +46,7 @@ export default defineConfig(
     ...reactHooks.configs.flat['recommended-latest'],
   },
   {
-    files: ['scripts/**', '*.config.{mjs,ts}'],
+    files: ['**/scripts/**', '*.config.{mjs,ts}'],
     languageOptions: { globals: globals.node },
   },
   prettier,

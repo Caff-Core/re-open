@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:reopen:schema:error",
+  "title": "ErrorResponse",
+  "description": "Error returned for a request. The message is user-safe and redacted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "code", "retryable", "message"],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "code": {
+      "$ref": "#/definitions/ErrorCode"
+    },
+    "retryable": {
+      "type": "boolean"
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 512
+    }
+  },
+  "definitions": {
+    "ErrorCode": {
+      "description": "Stable error codes from docs/PROTOCOL.md.",
+      "type": "string",
+      "enum": [
+        "VERSION_UNSUPPORTED",
+        "UNAUTHORIZED",
+        "INVALID_PAYLOAD",
+        "LIMIT_EXCEEDED",
+        "SOURCE_UNAVAILABLE",
+        "STALE_PLAN",
+        "MEMORY_PRESSURE",
+        "STORAGE_UNAVAILABLE",
+        "TIMEOUT",
+        "UNSUPPORTED_CAPABILITY"
+      ]
+    }
+  }
+}

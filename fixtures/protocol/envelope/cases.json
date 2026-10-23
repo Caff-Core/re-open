@@ -1,0 +1,47 @@
+{
+  "description": "Shared envelope decoding cases. Rust (crates/protocol) and TypeScript (packages/contracts) tests both run every case. 'generate' cases are built in memory to avoid committing large files.",
+  "cases": [
+    { "name": "valid minimal", "file": "valid-minimal.json", "expect": "ok" },
+    {
+      "name": "valid browser.capture.begin",
+      "file": "valid-browser-capture-begin.json",
+      "expect": "ok"
+    },
+    { "name": "malformed JSON", "file": "malformed-json.txt", "expect": "INVALID_PAYLOAD" },
+    {
+      "name": "missing request_id",
+      "file": "missing-request-id.json",
+      "expect": "INVALID_PAYLOAD"
+    },
+    {
+      "name": "unknown top-level field",
+      "file": "unknown-field.json",
+      "expect": "INVALID_PAYLOAD"
+    },
+    {
+      "name": "request_id is not a UUID",
+      "file": "invalid-request-id.json",
+      "expect": "INVALID_PAYLOAD"
+    },
+    {
+      "name": "payload is not an object",
+      "file": "payload-not-object.json",
+      "expect": "INVALID_PAYLOAD"
+    },
+    {
+      "name": "unknown protocol version",
+      "file": "unknown-version.json",
+      "expect": "VERSION_UNSUPPORTED"
+    },
+    {
+      "name": "oversized message",
+      "generate": { "from": "valid-minimal.json", "padPayloadToBytes": 262145 },
+      "expect": "LIMIT_EXCEEDED"
+    },
+    {
+      "name": "exactly at the size limit",
+      "generate": { "from": "valid-minimal.json", "padPayloadToBytes": 262144 },
+      "expect": "ok"
+    }
+  ]
+}
