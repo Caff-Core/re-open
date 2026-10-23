@@ -1,0 +1,10 @@
+{
+  "name": "re-open",
+  "private": true,
+  "license": "MIT",
+  "packageManager": "pnpm@12.15.0",
+  "engines": {
+    "node": ">=24.22.1 <25",
+    "pnpm": ">=12.15.0 <13"
+  }
+}

@@ -70,10 +70,10 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [x] `docs/UI.md`: GNOME tray limitation noted (see 4.1)
 
 ### 0.4 Toolchain pinning — `chore` · [#4](https://github.com/Caff-Core/re-open/issues/4)
-- [ ] Verify current stable versions and compatibility of Node, pnpm, Rust, Tauri 2, React, Vite, Tailwind CSS 4, shadcn CLI and ReUI against official documentation; record the result in `docs/DECISIONS.md`
-- [ ] `rust-toolchain.toml` (exact stable version, `rustfmt` and `clippy` components)
-- [ ] `.node-version`, root `package.json` `packageManager` and `engines` fields
-- [ ] Record exact versions in `README.md` prerequisites, including Fedora system packages (`webkit2gtk4.1-devel`, `gtk3-devel`, `libsoup3-devel`, `openssl-devel`, `librsvg2-devel`, `libappindicator-gtk3-devel`)
+- [x] Verify current stable versions and compatibility of Node, pnpm, Rust, Tauri 2, React, Vite, Tailwind CSS 4, shadcn CLI and ReUI against official documentation; record the result in `docs/DECISIONS.md`
+- [x] `rust-toolchain.toml` (exact stable version, `rustfmt` and `clippy` components)
+- [x] `.nvmrc` (read by nvm and `actions/setup-node`), root `package.json` `packageManager` and `engines` fields
+- [x] Record exact versions in `README.md` prerequisites, including Fedora system packages (`webkit2gtk4.1-devel`, `gtk3-devel`, `libsoup3-devel`, `openssl-devel`, `librsvg2-devel`, `libappindicator-gtk3-devel`, `libxdo-devel`)
 
 ### 0.5 pnpm workspace and TypeScript tooling — `chore` · [#5](https://github.com/Caff-Core/re-open/issues/5)
 - [ ] `pnpm-workspace.yaml` covering `apps/*` and `packages/*`; commit `pnpm-lock.yaml`

@@ -47,6 +47,26 @@ This tool reopens resources; it does not checkpoint process memory, preserve uns
 
 No cloud service, account, hosted backend or database server is required. SQLite is an intentional exception to a server-database stack: this is a single-user local application.
 
+## Prerequisites
+
+Exact versions are pinned in the repository and recorded in [ADR-014](docs/DECISIONS.md#adr-014-toolchain-and-dependency-versions).
+
+| Tool | Version | Pinned by |
+| --- | --- | --- |
+| Node.js | 24.22.1 (LTS) | `.nvmrc` (`nvm install && nvm use`), `engines` in `package.json` |
+| pnpm | 12.15.0 | `packageManager` in `package.json` (pnpm switches to it automatically) |
+| Rust | 1.99.1 with `rustfmt` and `clippy` | `rust-toolchain.toml` (rustup installs it automatically) |
+
+Fedora 44 system packages for Tauri 2 (WebKitGTK 4.1):
+
+```sh
+sudo dnf install webkit2gtk4.1-devel gtk3-devel libsoup3-devel openssl-devel \
+  librsvg2-devel libappindicator-gtk3-devel libxdo-devel file curl
+sudo dnf group install c-development
+```
+
+`libappindicator-gtk3-devel` is only needed to build tray support; GNOME shows tray icons only with an AppIndicator extension installed (see [Desktop interface](docs/UI.md)).
+
 ## Working on the project
 
 Pick the next open task in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md); each task has a GitHub issue and one branch/PR. Coding agents start from [AGENTS.md](AGENTS.md). No build commands are claimed to work until the corresponding manifests and scripts exist (tasks 0.4–0.10).
