@@ -47,7 +47,7 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 - [x] Add `.gitignore` (Node, pnpm, Vite, Rust `target/`, Tauri bundles, `.env*.local`, editor files, local dev data directories)
 - [x] Add `.editorconfig` and `.gitattributes` (LF line endings, generated files marked `linguist-generated`)
 - [x] Set remote `git@github.com:Caff-Core/re-open.git` and push
-- [ ] Enable branch protection on `main`: PR required, required status checks (added in 0.10), no force-push, no deletion, 0 required approvals
+- [x] Enable branch protection on `main`: PR required, required status checks (added in 0.10), no force-push, no deletion, 0 required approvals
 - [x] Repository settings: squash merge only, PR title as default commit message, auto-delete merged branches
 
 ### 0.2 GitHub tracking setup — `chore` · [#2](https://github.com/Caff-Core/re-open/issues/2)
@@ -127,20 +127,20 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 
 ### 0.10 Continuous integration — `ci` · [#10](https://github.com/Caff-Core/re-open/issues/10)
 
-- [ ] `.github/workflows/ci.yml` on `ubuntu-latest` for PRs and pushes to `main`
-- [ ] Job `node`: `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`, `contracts:check`
-- [ ] Job `rust`: install Tauri system dependencies, `cargo fmt --check`, `clippy -D warnings`, `cargo test --workspace`
-- [ ] Caching for pnpm store and Cargo; pinned action versions
-- [ ] Mark both jobs as required status checks on `main`
+- [x] `.github/workflows/ci.yml` on `ubuntu-latest` for PRs and pushes to `main`
+- [x] Job `node`: `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`, TypeScript half of `contracts:check`
+- [x] Job `rust`: install Tauri system dependencies, `cargo fmt --check`, `clippy -D warnings`, `cargo test --workspace`, Rust half of `contracts:check`
+- [x] Caching for pnpm store and Cargo; actions pinned to commit SHAs
+- [x] Mark both jobs as required status checks on `main`
 
 ### Phase 0 exit criteria
 
 - [x] Target matrix documented and ADRs 009–013 recorded
-- [ ] Lockfiles committed; no unbounded dependency versions
-- [ ] Every root command in `docs/MONOREPO.md` exists and either works or fails with a useful phase message
-- [ ] Core crate, contracts fixtures and frontend smoke checks pass locally and in CI
-- [ ] Desktop window renders shadcn + ReUI smoke components on GNOME Wayland
-- [ ] Every Phase 0 issue closed; board reflects reality
+- [x] Lockfiles committed; no unbounded dependency versions
+- [x] Every root command in `docs/MONOREPO.md` exists and either works or fails with a useful phase message
+- [x] Core crate, contracts fixtures and frontend smoke checks pass locally and in CI
+- [x] Desktop window renders shadcn + ReUI smoke components on GNOME Wayland
+- [x] Every Phase 0 issue closed; board reflects reality
 
 ---
 
