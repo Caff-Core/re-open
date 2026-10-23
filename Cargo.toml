@@ -1,0 +1,36 @@
+[workspace]
+resolver = "3"
+# apps/desktop/src-tauri joins in task 0.7.
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+license = "MIT"
+repository = "https://github.com/Caff-Core/re-open"
+publish = false
+
+[workspace.dependencies]
+reopen-core = { path = "crates/core" }
+
+[workspace.lints.rust]
+# Platform crates may override this with a safety comment on every unsafe block.
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+dbg_macro = "warn"
+todo = "warn"
+unimplemented = "warn"
+unwrap_used = "warn"
+expect_used = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

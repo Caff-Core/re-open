@@ -91,14 +91,15 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 
 ### 0.6 Cargo workspace — `chore` · [#6](https://github.com/Caff-Core/re-open/issues/6)
 
-- [ ] Root `Cargo.toml` workspace with `crates/*` and `apps/desktop/src-tauri`; shared `[workspace.package]`, `[workspace.dependencies]` and `[workspace.lints]` (`unsafe_code = "forbid"` by default, overridden only in platform crates)
-- [ ] `crates/core` with a minimal domain type and one unit test (smoke only; real types in Phase 1)
-- [ ] `rustfmt.toml`, clippy configuration; commit `Cargo.lock`
-- [ ] `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` and `cargo test --workspace` pass locally
+- [x] Root `Cargo.toml` workspace with `crates/*` (`apps/desktop/src-tauri` joins in 0.7); shared `[workspace.package]`, `[workspace.dependencies]` and `[workspace.lints]` (`unsafe_code = "forbid"` by default, overridden only in platform crates)
+- [x] `crates/core` (package `reopen-core`, since `core` shadows the standard library crate) with a minimal domain type and one unit test (smoke only; real types in Phase 1)
+- [x] `rustfmt.toml`, clippy configuration; commit `Cargo.lock`
+- [x] `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` and `cargo test --workspace` pass locally
 
 ### 0.7 Tauri 2 + React desktop scaffold — `feat` · [#7](https://github.com/Caff-Core/re-open/issues/7)
 
 - [ ] Scaffold `apps/desktop` (React + TypeScript + Vite) and `apps/desktop/src-tauri` following current Tauri 2 documentation
+- [ ] Add `apps/desktop/src-tauri` to the Cargo workspace members
 - [ ] Set identifier `com.caffcore.reopen`, product name, window defaults
 - [ ] Lock down capabilities: no shell, fs, http or opener plugins; strict CSP; no remote content or arbitrary navigation
 - [ ] One typed example command (`app_version`) to prove the command path; no business logic in the shell
