@@ -46,7 +46,7 @@ The agent acquires its lock, validates storage, applies migrations, protects the
 - `ipc`: authentication context, role routing, schemas and bounded queues.
 - `platform`: adapter traits and explicit capability discovery.
 
-Use Tokio for timers and local IPC, with bounded channels. Move blocking SQLite calls to a dedicated writer thread and blocking platform probes to bounded workers. Serialize capture cycles; if one is still running, coalesce the next tick rather than queue indefinitely. Capture cadence and memory sampling use separate schedules.
+Use Tokio for timers and local IPC, with bounded channels. Move blocking SQLite calls to a dedicated writer thread and blocking platform probes to bounded workers. Serialize capture cycles; if one is still running, coalesce the next tick rather than queue indefinitely. In practice ticks that fall due during a long cycle collapse into one catch-up cycle when it ends, and "Save now" requests made while one is pending merge into it. Providers run concurrently on the blocking pool under the provider deadline capped by the cycle deadline; a probe that overruns keeps its worker until it returns, and later cycles report that provider as timed out instead of starting another probe, so overruns cannot accumulate threads. Capture cadence and memory sampling use separate schedules.
 
 ## Supported capability model
 

@@ -11,6 +11,7 @@ repository = "https://github.com/Caff-Core/re-open"
 publish = false
 
 [workspace.dependencies]
+reopen-platform = { path = "crates/platform" }
 reopen-protocol = { path = "crates/protocol" }
 reopen-storage = { path = "crates/storage" }
 reopen-core = { path = "crates/core" }

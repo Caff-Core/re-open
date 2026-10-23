@@ -1,0 +1,22 @@
+[package]
+name = "reopen-agent"
+description = "Re-Open background agent"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+reopen-core.workspace = true
+reopen-platform.workspace = true
+reopen-storage.workspace = true
+tokio = { version = "1.54.1", features = ["macros", "rt", "sync", "time"] }
+
+[dev-dependencies]
+tempfile = "3.27.0"
+tokio = { version = "1.54.1", features = ["macros", "rt", "sync", "test-util", "time"] }
+
+[lints]
+workspace = true
