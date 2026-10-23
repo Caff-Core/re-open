@@ -1,0 +1,19 @@
+[package]
+name = "reopen-storage"
+description = "Re-Open SQLite storage and migrations"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+reopen-core.workspace = true
+rusqlite = { version = "0.40.2", features = ["bundled", "backup"] }
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[lints]
+workspace = true
