@@ -127,10 +127,10 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 
 ### 0.10 Continuous integration — `ci` · [#10](https://github.com/Caff-Core/re-open/issues/10)
 
-- [ ] `.github/workflows/ci.yml` on `ubuntu-latest` for PRs and pushes to `main`
-- [ ] Job `node`: `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`, `contracts:check`
-- [ ] Job `rust`: install Tauri system dependencies, `cargo fmt --check`, `clippy -D warnings`, `cargo test --workspace`
-- [ ] Caching for pnpm store and Cargo; pinned action versions
+- [x] `.github/workflows/ci.yml` on `ubuntu-latest` for PRs and pushes to `main`
+- [x] Job `node`: `pnpm install --frozen-lockfile`, `lint`, `typecheck`, `test`, `build`, TypeScript half of `contracts:check`
+- [x] Job `rust`: install Tauri system dependencies, `cargo fmt --check`, `clippy -D warnings`, `cargo test --workspace`, Rust half of `contracts:check`
+- [x] Caching for pnpm store and Cargo; actions pinned to commit SHAs
 - [ ] Mark both jobs as required status checks on `main`
 
 ### Phase 0 exit criteria
