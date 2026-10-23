@@ -1,0 +1,13 @@
+pnpm-lock.yaml
+**/dist
+**/target
+**/src/generated
+apps/desktop/src-tauri/gen
+
+# Installer-managed agent skills (ReUI); reformatting would churn on every reinstall
+.agents
+.claude/skills
+.cursor
+.opencode
+.gemini
+.claude/worktrees
