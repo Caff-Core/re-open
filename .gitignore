@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+.vite/
+coverage/
+
+# Rust
+target/
+
+# Tauri
+apps/desktop/src-tauri/gen/schemas/
+apps/desktop/src-tauri/target/
+
+# Extension artifacts
+apps/extension/dist/
+*.zip
+*.xpi
+*.crx
+*.pem
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local development data (never commit checkpoints or pairing data)
+.dev-data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db
+
+# Logs
+*.log
+logs/
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+.DS_Store
+Thumbs.db
+
+# Agent-local settings
+.claude/settings.local.json
