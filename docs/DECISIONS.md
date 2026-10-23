@@ -76,6 +76,17 @@ Consequences: local IPC uses per-user Unix domain sockets verified with `SO_PEER
 
 Upgrades happen in dedicated `chore` PRs that re-check these constraints and update this table.
 
+## ADR-015: Application versioning
+
+**Status:** accepted (2026-10-23). Semantic Versioning, one application version for everything that ships together.
+
+- `[workspace.package].version` in the root `Cargo.toml` is the source of truth for every Rust binary (desktop shell, agent, native host). `tauri.conf.json` has no `version` key, so Tauri inherits it.
+- Shipped JavaScript manifests carry the same version: `apps/desktop/package.json` now, the browser extension `package.json` and generated `manifest.json` from task 3.4. `scripts/versions.test.mjs` (run by `pnpm test`) fails on any mismatch.
+- Bump in the PR that changes shipped behaviour, not in documentation, CI or tooling-only PRs. Before 1.0: minor for new user-visible features or breaking changes to stored data or protocol; patch for fixes. The first tagged release (task 6.5) sets the starting public version.
+- Internal crates and packages (`publish = false`, `private`) do not version independently.
+- `protocol_version`, the database schema version and the extension compatibility matrix are separate counters (`docs/PROTOCOL.md`, `docs/DATA_MODEL.md`, task 6.4); bumping the app version does not change them, and changing them requires an app version bump.
+- Release tags are `vX.Y.Z`.
+
 ## Open decisions
 
 - Window enumeration approach on GNOME Wayland (task 2.1).

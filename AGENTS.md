@@ -57,6 +57,7 @@ The repository is being bootstrapped; check [docs/IMPLEMENTATION_PLAN.md](docs/I
 - Conventional Commits. No co-author trailers in commit messages.
 - PR title is a Conventional Commit (it becomes the squash commit) and the body contains `Closes #<issue>`. `main` is protected; never push to it directly.
 - Before starting, check for an existing branch or open PR for the issue so parallel sessions do not duplicate work.
+- Bump the application version per [ADR-015](docs/DECISIONS.md#adr-015-application-versioning) in any PR that changes shipped behaviour of the desktop app, agent, native host or browser extension. Edit `[workspace.package].version` in `Cargo.toml` and every manifest listed in `scripts/versions.mjs`; `pnpm test` fails on a mismatch.
 
 Never claim tests passed unless executed. Do not fabricate working native integrations from mocks. No requirement to delegate to subagents.
 

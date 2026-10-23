@@ -98,13 +98,13 @@ Goal: a working monorepo with real command contracts, CI, a Tauri + React deskto
 
 ### 0.7 Tauri 2 + React desktop scaffold — `feat` · [#7](https://github.com/Caff-Core/re-open/issues/7)
 
-- [ ] Scaffold `apps/desktop` (React + TypeScript + Vite) and `apps/desktop/src-tauri` following current Tauri 2 documentation
-- [ ] Add `apps/desktop/src-tauri` to the Cargo workspace members
-- [ ] Set identifier `com.caffcore.reopen`, product name, window defaults
-- [ ] Lock down capabilities: no shell, fs, http or opener plugins; strict CSP; no remote content or arbitrary navigation
-- [ ] One typed example command (`app_version`) to prove the command path; no business logic in the shell
-- [ ] `pnpm dev:desktop` opens a window on GNOME Wayland; document any WebKitGTK environment workaround required on this machine
-- [ ] `pnpm build` builds the frontend; `cargo build -p` for the shell succeeds
+- [x] Scaffold `apps/desktop` (React + TypeScript + Vite) and `apps/desktop/src-tauri` following current Tauri 2 documentation
+- [x] Add `apps/desktop/src-tauri` to the Cargo workspace members
+- [x] Set identifier `com.caffcore.reopen`, product name, window defaults
+- [x] Lock down capabilities: no shell, fs, http or opener plugins; strict CSP; no remote content or arbitrary navigation
+- [x] One typed example command (`app_version`) to prove the command path; no business logic in the shell
+- [x] `pnpm dev:desktop` opens a window on GNOME Wayland; document any WebKitGTK environment workaround required on this machine (none needed on the Intel GPU reference machine)
+- [x] `pnpm build` builds the frontend; `cargo build -p` for the shell succeeds
 
 ### 0.8 Tailwind CSS 4, shadcn/ui and ReUI via MCP — `feat` · [#8](https://github.com/Caff-Core/re-open/issues/8)
 
@@ -290,6 +290,7 @@ Goal: Brave profiles captured end to end through the extension and native host, 
 - [ ] `apps/extension` with its own Vite config, MV3 manifest, service worker and minimal popup
 - [ ] Permissions limited to `tabs`, `storage`, `nativeMessaging`, `alarms`
 - [ ] `pnpm dev:extension` watch-builds an unpacked extension
+- [ ] Extension `package.json` and generated `manifest.json` version derived from the app version; add them to `scripts/versions.mjs` (ADR-015)
 
 ### 3.5 Extension capture — `feat` · [#30](https://github.com/Caff-Core/re-open/issues/30)
 

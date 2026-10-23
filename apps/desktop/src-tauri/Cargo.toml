@@ -1,0 +1,23 @@
+[package]
+name = "reopen-desktop"
+description = "Re-Open desktop shell (Tauri)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[lib]
+# Distinct from the binary name; see https://github.com/rust-lang/cargo/issues/8519
+name = "reopen_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7.4", features = [] }
+
+[dependencies]
+tauri = { version = "2.12.5", features = [] }
+
+[lints]
+workspace = true
