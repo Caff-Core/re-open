@@ -51,14 +51,17 @@ impl FakeBehavior {
             Self::Complete(resources) => Ok(ProviderCapture {
                 state: CaptureState::Complete,
                 resources,
+                adapter: None,
             }),
             Self::Partial(resources, error) => Ok(ProviderCapture {
                 state: CaptureState::Partial(error),
                 resources,
+                adapter: None,
             }),
             Self::Empty => Ok(ProviderCapture {
                 state: CaptureState::Complete,
                 resources: Vec::new(),
+                adapter: None,
             }),
             Self::Fail(error) => Err(error),
             Self::Hang(gate, then) => {

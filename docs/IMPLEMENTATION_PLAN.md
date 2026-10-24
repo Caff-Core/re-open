@@ -234,11 +234,11 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 ### 2.3 Window discovery adapter — `feat` · [#22](https://github.com/Caff-Core/re-open/issues/22)
 
-- [ ] Primary provider `linux.gnome-shell`: D-Bus client for `com.caffcore.ReOpen.Windows1.GetWindows` (ADR-016), checking the `Version` property; extension prototype in `apps/gnome-shell-extension`
-- [ ] Fallback provider `linux.systemd-units`: app IDs from `app-gnome-*`, `app-flatpak-*` and D-Bus-activated user units, reported as `partial` with a limited-visibility error
-- [ ] Development install script for the extension (copy to the user extensions directory; the user enables it and logs in again)
-- [ ] Headless extension check (`scripts/test-gnome-extension.sh`) documented in TESTING_RELEASE
-- [ ] Bounded probe workers and timeouts; unsupported capability reported, never guessed
+- [x] Primary provider `linux.gnome-shell`: D-Bus client for `com.caffcore.ReOpen.Windows1.GetWindows` (ADR-016), checking the `Version` property; extension prototype in `apps/gnome-shell-extension`
+- [x] Fallback provider `linux.systemd-units`: app IDs from `app-gnome-*`, `app-flatpak-*` and D-Bus-activated user units, reported as `partial` with a limited-visibility error
+- [x] Development install script for the extension (copy to the user extensions directory; the user enables it and logs in again)
+- [x] Headless extension check (`scripts/test-gnome-extension.sh`) documented in TESTING_RELEASE
+- [x] Bounded probe workers and timeouts; unsupported capability reported, never guessed
 
 ### 2.4 Conservative launch adapter — `feat` · [#23](https://github.com/Caff-Core/re-open/issues/23)
 

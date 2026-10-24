@@ -38,7 +38,15 @@ impl Env {
 
     fn start(&self, scenario: &str) -> Child {
         let child = self
-            .command(&["run", "--interval-secs", "1", "--fake-scenario", scenario])
+            .command(&[
+                "run",
+                "--provider",
+                "fake",
+                "--interval-secs",
+                "1",
+                "--fake-scenario",
+                scenario,
+            ])
             .stdout(Stdio::null())
             .stderr(Stdio::piped())
             .spawn()

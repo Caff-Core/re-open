@@ -19,7 +19,9 @@
     "dev:desktop": "pnpm --filter @workspace/desktop tauri dev",
     "dev:agent": "cargo run -q -p reopen-agent -- --dev run",
     "dev:extension": "node scripts/pending.mjs dev:extension 3.4",
-    "package:linux": "node scripts/pending.mjs package:linux 6.1"
+    "package:linux": "node scripts/pending.mjs package:linux 6.1",
+    "gnome-extension:install": "scripts/install-gnome-extension.sh",
+    "gnome-extension:test": "scripts/test-gnome-extension.sh"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

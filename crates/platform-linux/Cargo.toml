@@ -11,6 +11,7 @@ publish.workspace = true
 [dependencies]
 reopen-core.workspace = true
 reopen-platform.workspace = true
+zbus = { version = "6.1.0", default-features = false, features = ["default-rt", "proxy"] }
 
 [dev-dependencies]
 tempfile = "3.27.0"

@@ -24,6 +24,10 @@ pub enum CaptureState {
 pub struct ProviderCapture {
     pub state: CaptureState,
     pub resources: Vec<ResourcePayload>,
+    /// The adapter that produced this capture, when a provider switches
+    /// between adapters (for example a primary and a fallback). Defaults to
+    /// [`CaptureProvider::adapter`].
+    pub adapter: Option<AdapterRef>,
 }
 
 /// A source of captured resources, such as visible desktop apps.

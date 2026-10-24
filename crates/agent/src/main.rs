@@ -8,7 +8,7 @@ use clap::{Parser, Subcommand, ValueEnum};
 use reopen_agent::ipc::client::{self, ClientError};
 use reopen_agent::paths::AgentPaths;
 use reopen_agent::render;
-use reopen_agent::run::{self, FakeScenario, RunOptions};
+use reopen_agent::run::{self, FakeScenario, ProviderChoice, RunOptions};
 use serde_json::json;
 use uuid::Uuid;
 
@@ -26,7 +26,10 @@ struct Cli {
 enum Command {
     /// Run the agent in the foreground until interrupted.
     Run {
-        /// What the fake desktop provider reports (real adapters arrive in Phase 2).
+        /// Where application capture comes from.
+        #[arg(long, value_enum, default_value_t = Provider::Linux)]
+        provider: Provider,
+        /// What the fake provider reports (with `--provider fake`).
         #[arg(long, value_enum, default_value_t = Scenario::Complete)]
         fake_scenario: Scenario,
         /// Seconds between scheduled captures.
@@ -53,6 +56,14 @@ enum Command {
 enum CheckpointCommand {
     /// Show one checkpoint's sources and resources.
     Show { id: Uuid },
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum Provider {
+    /// GNOME window list, falling back to running apps (partial).
+    Linux,
+    /// Scripted fake data.
+    Fake,
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -140,11 +151,16 @@ fn main() -> ExitCode {
 
     match cli.command {
         Command::Run {
+            provider,
             fake_scenario,
             interval_secs,
         } => {
+            let provider = match provider {
+                Provider::Linux => ProviderChoice::Linux,
+                Provider::Fake => ProviderChoice::Fake(fake_scenario.into()),
+            };
             let options = RunOptions {
-                scenario: fake_scenario.into(),
+                provider,
                 capture_interval: Duration::from_secs(interval_secs),
             };
             match runtime.block_on(run::run(&paths, options, shutdown_signal())) {
