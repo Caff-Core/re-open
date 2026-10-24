@@ -9,15 +9,47 @@ use std::time::{Duration, Instant};
 
 use serde::{Deserialize, Serialize};
 
-/// A UTC point in time.
+/// A UTC point in time with whole-second precision.
+///
+/// Truncating to seconds keeps the stored RFC 3339 text fixed-width
+/// (`YYYY-MM-DDTHH:MM:SSZ`), so ordering stored text matches ordering time.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
-#[serde(transparent)]
+#[serde(try_from = "jiff::Timestamp", into = "jiff::Timestamp")]
 pub struct Timestamp(jiff::Timestamp);
 
+impl From<jiff::Timestamp> for Timestamp {
+    fn from(timestamp: jiff::Timestamp) -> Self {
+        Self::from_jiff(timestamp)
+    }
+}
+
+impl From<Timestamp> for jiff::Timestamp {
+    fn from(timestamp: Timestamp) -> Self {
+        timestamp.0
+    }
+}
+
 impl Timestamp {
+    /// Truncates to whole seconds.
     #[must_use]
-    pub const fn from_jiff(timestamp: jiff::Timestamp) -> Self {
-        Self(timestamp)
+    pub fn from_jiff(timestamp: jiff::Timestamp) -> Self {
+        Self(jiff::Timestamp::from_second(timestamp.as_second()).unwrap_or(timestamp))
+    }
+
+    /// Whole seconds since the Unix epoch.
+    #[must_use]
+    pub fn as_second(&self) -> i64 {
+        self.0.as_second()
+    }
+
+    /// This instant minus a duration, saturating at the earliest timestamp.
+    #[must_use]
+    pub fn saturating_sub(self, duration: Duration) -> Self {
+        let seconds = i64::try_from(duration.as_secs()).unwrap_or(i64::MAX);
+        Self::from_jiff(
+            jiff::Timestamp::from_second(self.as_second().saturating_sub(seconds))
+                .unwrap_or(jiff::Timestamp::MIN),
+        )
     }
 
     #[must_use]
@@ -31,7 +63,7 @@ impl Timestamp {
     ///
     /// Returns an error when the text is not a valid RFC 3339 timestamp.
     pub fn parse(text: &str) -> Result<Self, jiff::Error> {
-        text.parse().map(Self)
+        text.parse().map(Self::from_jiff)
     }
 }
 
@@ -98,7 +130,7 @@ impl Default for SystemClock {
 
 impl Clock for SystemClock {
     fn now_utc(&self) -> Timestamp {
-        Timestamp(jiff::Timestamp::now())
+        Timestamp::from_jiff(jiff::Timestamp::now())
     }
 
     fn now_monotonic(&self) -> MonotonicInstant {
@@ -157,6 +189,26 @@ mod tests {
         assert_eq!(
             serde_json::to_string(&ts).unwrap(),
             "\"2026-10-23T12:00:00Z\""
+        );
+    }
+
+    #[test]
+    fn timestamps_are_whole_seconds_so_text_order_is_time_order() {
+        let fractional = Timestamp::parse("2026-10-23T12:00:00.9Z").unwrap();
+        assert_eq!(fractional.to_string(), "2026-10-23T12:00:00Z");
+        let later = Timestamp::parse("2026-10-23T12:00:01Z").unwrap();
+        assert!(fractional.to_string() < later.to_string());
+        let from_json: Timestamp = serde_json::from_str("\"2026-10-23T12:00:00.5Z\"").unwrap();
+        assert_eq!(from_json, fractional);
+        assert_eq!(SystemClock::new().now_utc().to_string().len(), 20);
+    }
+
+    #[test]
+    fn saturating_sub_moves_back_in_whole_seconds() {
+        let ts = Timestamp::parse("2026-10-23T12:00:00Z").unwrap();
+        assert_eq!(
+            ts.saturating_sub(Duration::from_secs(86_400)).to_string(),
+            "2026-10-22T12:00:00Z"
         );
     }
 

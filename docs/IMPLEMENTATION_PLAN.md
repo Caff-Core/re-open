@@ -183,9 +183,9 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.6 Manual checkpoints, pins and retention — `feat` · [#16](https://github.com/Caff-Core/re-open/issues/16)
 
-- [ ] "Save now" explicit checkpoints; pin/unpin with multiple reasons
-- [ ] Retention by age and count on eligible unpinned automatic checkpoints only, as a separate bounded transaction
-- [ ] Storage budget warning when pins prevent compliance
+- [x] "Save now" explicit checkpoints; pin/unpin with multiple reasons
+- [x] Retention by age and count on eligible unpinned automatic checkpoints only, as a separate bounded transaction
+- [x] Storage budget warning when pins prevent compliance
 
 ### 1.7 Memory sampling interface — `feat` · [#17](https://github.com/Caff-Core/re-open/issues/17)
 

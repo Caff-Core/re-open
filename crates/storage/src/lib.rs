@@ -13,12 +13,14 @@ use rusqlite::{Connection, OpenFlags, params};
 mod checkpoint;
 mod error;
 pub mod migrate;
+mod retention;
 mod session;
 pub mod writer;
 
 pub use checkpoint::{CommitOutcome, NewCheckpoint};
 pub use error::StoreError;
 pub use migrate::{MIGRATIONS, Migration};
+pub use retention::{PinReason, RetentionPolicy, RetentionReport};
 pub use session::{CandidateDisposition, PreviousSession, RecoveryCandidate, SessionStart};
 pub use writer::{WriterError, WriterHandle};
 

@@ -2858,6 +2858,7 @@ dependencies = [
 name = "reopen-storage"
 version = "0.1.0"
 dependencies = [
+ "jiff",
  "reopen-core",
  "rusqlite",
  "serde",
