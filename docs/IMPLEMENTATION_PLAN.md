@@ -228,9 +228,9 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 ### 2.2 `platform-linux` application identity — `feat` · [#21](https://github.com/Caff-Core/re-open/issues/21)
 
-- [ ] Resolve app identity from freedesktop `.desktop` entries (system, user, Flatpak exports)
-- [ ] Validate executable references; label Flatpak and Snap apps by app ID
-- [ ] Exclude system/background processes and the configured exclusion list
+- [x] Resolve app identity from freedesktop `.desktop` entries (system, user, Flatpak exports)
+- [x] Validate executable references; label Flatpak and Snap apps by app ID
+- [x] Exclude system/background processes and the configured exclusion list
 
 ### 2.3 Window discovery adapter — `feat` · [#22](https://github.com/Caff-Core/re-open/issues/22)
 

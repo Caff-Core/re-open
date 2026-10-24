@@ -12,6 +12,7 @@ publish = false
 
 [workspace.dependencies]
 reopen-platform = { path = "crates/platform" }
+reopen-platform-linux = { path = "crates/platform-linux" }
 reopen-protocol = { path = "crates/protocol" }
 reopen-storage = { path = "crates/storage" }
 reopen-core = { path = "crates/core" }
