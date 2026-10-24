@@ -255,15 +255,15 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 ### 2.6 Native validation on the reference machine — `test` · [#25](https://github.com/Caff-Core/re-open/issues/25)
 
-- [ ] Explicitly selected apps reopen; unselected apps do not
-- [ ] Changed or missing executables fail safely
-- [ ] Restart during launch does not duplicate actions
-- [ ] Unsupported apps are labelled
+- [x] Explicitly selected apps reopen; unselected apps do not
+- [x] Changed or missing executables fail safely
+- [x] Restart during launch does not duplicate actions (automated journal test; not reproduced on the desktop, see the validation record)
+- [x] Unsupported apps are labelled
 
 ### Phase 2 exit criteria
 
-- [ ] Native tests above pass on Fedora 44 / GNOME Wayland
-- [ ] Phase 2 issues closed
+- [x] Native tests above pass on Fedora 44 / GNOME Wayland ([record](validation/2026-10-24-phase-2-native.md))
+- [x] Phase 2 issues closed
 
 ---
 
