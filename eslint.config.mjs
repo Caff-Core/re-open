@@ -46,6 +46,13 @@ export default defineConfig(
     ...reactHooks.configs.flat['recommended-latest'],
   },
   {
+    // GNOME Shell extensions run in GJS: gi:// and resource:// imports resolve at
+    // runtime, and `global` is the shell's global object.
+    files: ['apps/gnome-shell-extension/**/*.js'],
+    languageOptions: { globals: { global: 'readonly', log: 'readonly', logError: 'readonly' } },
+    rules: { 'import-x/no-unresolved': ['error', { ignore: ['^gi://', '^resource://'] }] },
+  },
+  {
     files: ['**/scripts/**', '*.config.{mjs,ts}'],
     languageOptions: { globals: globals.node },
   },
