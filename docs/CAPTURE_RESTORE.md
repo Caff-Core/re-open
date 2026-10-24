@@ -56,7 +56,7 @@ Action states: `pending`, `launching`, `restored`, `already_open`, `failed`, `sk
 
 Process identity alone is insufficient for document/project duplicates. Use normalized app identity plus adapter-confirmed resource identity. For browser tabs, compare exact normalized addresses within the intended source; preserve paths, query strings and fragments unless a documented rule proves equivalence. Do not strip potentially meaningful URL data.
 
-If duplicate detection is unsupported or uncertain, show the limitation and let the user choose. Keep browser profile sources separate. Browser window/tab IDs from a previous session are grouping keys only, not valid current API IDs.
+If duplicate detection is unsupported or uncertain, show the limitation and let the user choose. Concretely, an app seen only through limited visibility (or with no detection available) is planned as a possible duplicate and launches only when the start request sets `allow_possible_duplicates`; otherwise it is skipped as `possible_duplicate`. A plan expires after five minutes and can be started once. Memory pauses use available memory below 10 % to pause and above 15 % to resume, pending calibration in task 5.5. Keep browser profile sources separate. Browser window/tab IDs from a previous session are grouping keys only, not valid current API IDs.
 
 ## Restore validation
 

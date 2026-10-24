@@ -13,6 +13,7 @@ use reopen_core::resource::ApplicationV1;
 use reopen_core::{CaptureReason, Clock, ResourcePayload, SystemClock};
 use reopen_platform::CaptureProvider;
 use reopen_platform::fake::{FakeBehavior, FakeProvider};
+use reopen_platform::launch::{AppLauncher, FakeLauncher};
 use reopen_platform::memory::SystemMemorySampler;
 use reopen_storage::writer::{self, DEFAULT_QUEUE_CAPACITY};
 use reopen_storage::{CommitOutcome, RetentionPolicy, Store, StoreError};
@@ -22,6 +23,7 @@ use crate::capture::{CaptureEngine, CapturePolicy, CaptureTarget};
 use crate::ipc::{handler::DesktopHandler, server};
 use crate::lock::{AgentLock, LockError};
 use crate::paths::{AgentPaths, PathError};
+use crate::restore::{RestorePolicy, Restorer};
 use crate::{memory, scheduler};
 
 /// What the fake provider reports (Phase 1 runs on fakes only).
@@ -70,6 +72,39 @@ pub enum ProviderChoice {
 pub struct RunOptions {
     pub provider: ProviderChoice,
     pub capture_interval: Duration,
+}
+
+/// The platform pieces the agent composes for one provider choice.
+struct Adapters {
+    providers: Vec<Arc<dyn CaptureProvider>>,
+    launcher: Arc<dyn AppLauncher>,
+    /// Answers "is this app already open?" for restore.
+    detector: Arc<dyn CaptureProvider>,
+}
+
+impl Adapters {
+    fn for_choice(choice: ProviderChoice) -> Self {
+        let exclusions = reopen_platform_linux::ExclusionPolicy::default();
+        match choice {
+            ProviderChoice::Linux => Self {
+                providers: vec![Arc::new(
+                    reopen_platform_linux::GnomeAppsProvider::from_env(exclusions.clone()),
+                )],
+                launcher: Arc::new(reopen_platform_linux::LinuxLauncher::from_env(
+                    exclusions.clone(),
+                )),
+                detector: Arc::new(reopen_platform_linux::GnomeAppsProvider::from_env(
+                    exclusions,
+                )),
+            },
+            // Fakes never launch anything, and nothing is reported as already open.
+            ProviderChoice::Fake(scenario) => Self {
+                providers: vec![Arc::new(scenario.provider())],
+                launcher: Arc::new(FakeLauncher::default()),
+                detector: Arc::new(FakeProvider::new("desktop.apps", true, FakeBehavior::Empty)),
+            },
+        }
+    }
 }
 
 /// Why the agent stopped abnormally. Each maps to a distinct exit code.
@@ -139,28 +174,44 @@ pub async fn run(
         previous_clean_exit = start.previous.map(|previous| previous.clean_exit),
         new_candidate = start.new_candidate.is_some(),
     );
+    // Before any new restore can start: runs left unfinished by a crash are
+    // marked interrupted and mid-launch actions uncertain, never replayed.
+    let reconciled = store
+        .reconcile_interrupted_restores(clock.now_utc())
+        .map_err(RunError::Storage)?;
+    if reconciled > 0 {
+        tracing::warn!(event = "restore.reconciled", runs = reconciled);
+    }
 
     let (writer, writer_thread) =
         writer::spawn(store, DEFAULT_QUEUE_CAPACITY).map_err(RunError::Io)?;
     let (trigger, capture_shutdown, control) = scheduler::control();
     let (stop_tx, stop_rx) = watch::channel(false);
 
+    let Adapters {
+        providers,
+        launcher,
+        detector,
+    } = Adapters::for_choice(options.provider);
+    let (memory_tx, memory_rx) = watch::channel(None);
+    let restorer = Arc::new(Restorer::new(
+        writer.clone(),
+        launcher,
+        detector,
+        memory_rx,
+        Arc::clone(&clock),
+        RestorePolicy::default(),
+    ));
+
     let handler = Arc::new(DesktopHandler {
         writer: writer.clone(),
         trigger,
         session_id: start.session_id,
+        restorer,
     });
     let listener = server::bind(&paths.desktop_socket()).map_err(RunError::Io)?;
     tracing::info!(event = "agent.ready");
 
-    let providers: Vec<Arc<dyn CaptureProvider>> = match options.provider {
-        ProviderChoice::Linux => vec![Arc::new(
-            reopen_platform_linux::GnomeAppsProvider::from_env(
-                reopen_platform_linux::ExclusionPolicy::default(),
-            ),
-        )],
-        ProviderChoice::Fake(scenario) => vec![Arc::new(scenario.provider())],
-    };
     let engine = Arc::new(CaptureEngine::new(
         providers,
         CapturePolicy::default(),
@@ -178,7 +229,6 @@ pub async fn run(
         async move { capture_cycle(&engine, &target, clock.as_ref(), reason).await }
     });
 
-    let (memory_tx, _memory_rx) = watch::channel(None);
     let memory_loop = memory::run(
         Arc::new(SystemMemorySampler::new()),
         memory::DEFAULT_SAMPLE_INTERVAL,

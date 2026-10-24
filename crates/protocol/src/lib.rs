@@ -28,6 +28,12 @@ pub const DESKTOP_DEFINITIONS: &[&str] = &[
     "CheckpointsListResult",
     "CheckpointGetRequest",
     "CheckpointDetail",
+    "RestorePreviewRequest",
+    "RestorePlan",
+    "RestoreStartRequest",
+    "RestoreRunRef",
+    "RestoreCancelResult",
+    "RestoreStatus",
 ];
 
 /// Protocol major version this build speaks.

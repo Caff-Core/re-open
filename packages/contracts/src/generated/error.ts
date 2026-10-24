@@ -15,7 +15,8 @@ export type ErrorCode =
   | 'STORAGE_UNAVAILABLE'
   | 'TIMEOUT'
   | 'UNSUPPORTED_CAPABILITY'
-  | 'NOT_FOUND';
+  | 'NOT_FOUND'
+  | 'RESTORE_IN_PROGRESS';
 
 /**
  * Error returned for a request. The message is user-safe and redacted.

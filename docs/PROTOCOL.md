@@ -62,7 +62,7 @@ Desktop `restore.preview` produces a plan ID, resource selections, policy warnin
 
 Every frame is an envelope. A successful response repeats the request's `request_id` and uses kind `<operation>.result`, with the payload defined in `packages/contracts/schema/desktop.schema.json` (for example `status.get` → `status.get.result` with `StatusResult`). A failure uses kind `error` with an `ErrorResponse`-shaped payload. If a request is too malformed to read its `request_id`, the error carries the nil UUID. Both sides validate payloads against the schema definition for the operation, in addition to the envelope schema; the agent also validates its own responses before sending them.
 
-Implemented desktop operations (task 1.8): `status.get`, `capture.request`, `checkpoints.list`, `checkpoints.get`. Unknown operations return `UNSUPPORTED_CAPABILITY`. Each connection is served one request at a time, so at most one request is outstanding; the agent accepts at most 8 concurrent connections and closes a connection idle for 60 seconds.
+Implemented desktop operations: `status.get`, `capture.request`, `checkpoints.list`, `checkpoints.get` (task 1.8) and `restore.preview`, `restore.start`, `restore.status`, `restore.cancel` (task 2.5). Unknown operations return `UNSUPPORTED_CAPABILITY`. Each connection is served one request at a time, so at most one request is outstanding; the agent accepts at most 8 concurrent connections and closes a connection idle for 60 seconds.
 
 ## Framing and limits
 
@@ -74,7 +74,7 @@ Chunks include capture ID, zero-based index and tab/window data. Commit requires
 
 ## Errors and retries
 
-Errors contain `request_id`, stable code, retryable flag and a redacted user-safe message. Initial codes: `VERSION_UNSUPPORTED`, `UNAUTHORIZED`, `INVALID_PAYLOAD`, `LIMIT_EXCEEDED`, `SOURCE_UNAVAILABLE`, `STALE_PLAN`, `MEMORY_PRESSURE`, `STORAGE_UNAVAILABLE`, `TIMEOUT`, `UNSUPPORTED_CAPABILITY`, `NOT_FOUND`.
+Errors contain `request_id`, stable code, retryable flag and a redacted user-safe message. Initial codes: `VERSION_UNSUPPORTED`, `UNAUTHORIZED`, `INVALID_PAYLOAD`, `LIMIT_EXCEEDED`, `SOURCE_UNAVAILABLE`, `STALE_PLAN`, `MEMORY_PRESSURE`, `STORAGE_UNAVAILABLE`, `TIMEOUT`, `UNSUPPORTED_CAPABILITY`, `NOT_FOUND`, `RESTORE_IN_PROGRESS`.
 
 Capture retries reuse capture IDs; commit acknowledgements include the persisted capture ID. Reconnect uses exponential backoff capped at 60 seconds with jitter. Unsent state coalesces to the newest full capture. Never blindly retry launch actions after an ambiguous timeout.
 

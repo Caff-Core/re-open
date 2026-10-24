@@ -178,3 +178,64 @@ fn agent_lifecycle_through_the_cli() {
         "resource labels must never be logged"
     );
 }
+
+#[test]
+fn restore_preview_start_and_status_through_the_cli() {
+    let env = Env::new();
+    let agent = env.start("complete");
+    assert!(env.cli(&["capture"]).status.success());
+    let mut history = String::new();
+    wait_for(
+        || {
+            history = text(&env.cli(&["history"]));
+            history.contains("complete")
+        },
+        "a checkpoint",
+    );
+    let checkpoint = history
+        .split_whitespace()
+        .find(|word| word.len() == 36 && word.matches('-').count() == 4)
+        .unwrap()
+        .to_owned();
+
+    let only_second = text(&env.cli(&["restore", "preview", &checkpoint, "--only", "1"]));
+    assert!(
+        only_second.contains("org.example.Browser") && !only_second.contains("org.example.Editor"),
+        "{only_second}"
+    );
+    assert!(
+        !env.cli(&["restore", "preview", &checkpoint, "--only", "9"])
+            .status
+            .success()
+    );
+
+    let preview = text(&env.cli(&["restore", "preview", &checkpoint]));
+    assert!(preview.contains("2 to launch"), "{preview}");
+    let plan = preview.split_whitespace().nth(1).unwrap().to_owned();
+
+    let started = env.cli(&["restore", "start", &plan]);
+    assert!(
+        started.status.success(),
+        "{}",
+        String::from_utf8_lossy(&started.stderr)
+    );
+    let run = text(&started).split_whitespace().nth(2).unwrap().to_owned();
+    let mut status = String::new();
+    wait_for(
+        || {
+            status = text(&env.cli(&["restore", "status", &run]));
+            status.contains(": completed")
+        },
+        "the restore to complete",
+    );
+    assert_eq!(status.matches("restored").count(), 2, "{status}");
+
+    let reused = env.cli(&["restore", "start", &plan]);
+    assert!(
+        String::from_utf8_lossy(&reused.stderr).contains("StalePlan"),
+        "a plan is single use"
+    );
+    let unknown = env.cli(&["restore", "status", "0b9c3f0e-5d6a-4c8e-9f1a-2b3c4d5e6f70"]);
+    assert!(String::from_utf8_lossy(&unknown.stderr).contains("NotFound"));
+    terminate(agent);
+}

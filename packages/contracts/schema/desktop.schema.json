@@ -24,6 +24,24 @@
     },
     {
       "$ref": "#/definitions/CheckpointDetail"
+    },
+    {
+      "$ref": "#/definitions/RestorePreviewRequest"
+    },
+    {
+      "$ref": "#/definitions/RestorePlan"
+    },
+    {
+      "$ref": "#/definitions/RestoreStartRequest"
+    },
+    {
+      "$ref": "#/definitions/RestoreRunRef"
+    },
+    {
+      "$ref": "#/definitions/RestoreCancelResult"
+    },
+    {
+      "$ref": "#/definitions/RestoreStatus"
     }
   ],
   "definitions": {
@@ -270,6 +288,213 @@
           "maxItems": 10000,
           "items": {
             "$ref": "#/definitions/ResourceSummary"
+          }
+        }
+      }
+    },
+    "RunState": {
+      "type": "string",
+      "enum": ["queued", "running", "paused", "completed", "cancelled", "interrupted"]
+    },
+    "ActionState": {
+      "type": "string",
+      "enum": ["pending", "launching", "restored", "already_open", "failed", "skipped", "uncertain"]
+    },
+    "Disposition": {
+      "type": "string",
+      "enum": ["launch", "already_open", "skip"]
+    },
+    "RestorePreviewRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoint_id"],
+      "properties": {
+        "checkpoint_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "only": {
+          "description": "Resource ordinals to include (at least one); all resources when omitted.",
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "PlannedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "kind", "label", "disposition", "reason", "possible_duplicate"],
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": {
+          "$ref": "#/definitions/ResourceKind"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 8192
+        },
+        "disposition": {
+          "$ref": "#/definitions/Disposition"
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "possible_duplicate": {
+          "description": "Could not rule out that the app is already open; launches only if allowed.",
+          "type": "boolean"
+        }
+      }
+    },
+    "RestorePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan_id", "checkpoint_id", "expires_in_seconds", "warnings", "actions"],
+      "properties": {
+        "plan_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "checkpoint_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expires_in_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warnings": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "actions": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/definitions/PlannedAction"
+          }
+        }
+      }
+    },
+    "RestoreStartRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan_id", "allow_possible_duplicates"],
+      "properties": {
+        "plan_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "allow_possible_duplicates": {
+          "type": "boolean"
+        }
+      }
+    },
+    "RestoreRunRef": {
+      "description": "Result of restore.start; request of restore.status and restore.cancel.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id"],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "RestoreCancelResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cancelled"],
+      "properties": {
+        "cancelled": {
+          "description": "False when the run had already finished.",
+          "type": "boolean"
+        }
+      }
+    },
+    "RestoreActionStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "label", "state", "result"],
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 8192
+        },
+        "state": {
+          "$ref": "#/definitions/ActionState"
+        },
+        "result": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "RestoreStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id", "checkpoint_id", "state", "created_at", "completed_at", "actions"],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "checkpoint_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "state": {
+          "$ref": "#/definitions/RunState"
+        },
+        "created_at": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "completed_at": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actions": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/definitions/RestoreActionStatus"
           }
         }
       }

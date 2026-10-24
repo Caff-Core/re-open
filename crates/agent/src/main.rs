@@ -50,6 +50,33 @@ enum Command {
         #[command(subcommand)]
         command: CheckpointCommand,
     },
+    /// Preview, start, follow or cancel a restore.
+    Restore {
+        #[command(subcommand)]
+        command: RestoreCommand,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+enum RestoreCommand {
+    /// Show what restoring a checkpoint would do. Nothing is launched.
+    Preview {
+        checkpoint: Uuid,
+        /// Only these resource ordinals (comma separated).
+        #[arg(long, value_delimiter = ',', num_args = 1..)]
+        only: Vec<u64>,
+    },
+    /// Start a previewed plan.
+    Start {
+        plan: Uuid,
+        /// Also launch apps that may already be open.
+        #[arg(long)]
+        allow_possible_duplicates: bool,
+    },
+    /// Show a restore run's progress and outcomes.
+    Status { run: Uuid },
+    /// Stop launching further apps in a run.
+    Cancel { run: Uuid },
 }
 
 #[derive(Debug, Subcommand)]
@@ -116,6 +143,24 @@ async fn client_command(paths: &AgentPaths, command: Command) -> Result<String, 
         Command::Checkpoint {
             command: CheckpointCommand::Show { id },
         } => ("checkpoints.get", json!({ "id": id })),
+        Command::Restore { command } => match command {
+            RestoreCommand::Preview { checkpoint, only } if only.is_empty() => {
+                ("restore.preview", json!({ "checkpoint_id": checkpoint }))
+            }
+            RestoreCommand::Preview { checkpoint, only } => (
+                "restore.preview",
+                json!({ "checkpoint_id": checkpoint, "only": only }),
+            ),
+            RestoreCommand::Start {
+                plan,
+                allow_possible_duplicates,
+            } => (
+                "restore.start",
+                json!({ "plan_id": plan, "allow_possible_duplicates": allow_possible_duplicates }),
+            ),
+            RestoreCommand::Status { run } => ("restore.status", json!({ "run_id": run })),
+            RestoreCommand::Cancel { run } => ("restore.cancel", json!({ "run_id": run })),
+        },
         Command::Run { .. } => return Err(ClientError::Protocol),
     };
     let result = client::request(&socket, kind, payload).await?;
@@ -124,6 +169,12 @@ async fn client_command(paths: &AgentPaths, command: Command) -> Result<String, 
         Command::Capture => render::capture(result),
         Command::History { .. } => render::history(result),
         Command::Checkpoint { .. } => render::detail(result),
+        Command::Restore { command } => match command {
+            RestoreCommand::Preview { .. } => render::plan(result),
+            RestoreCommand::Start { .. } => render::run_started(result),
+            RestoreCommand::Status { .. } => render::run_status(result),
+            RestoreCommand::Cancel { .. } => render::run_cancelled(result),
+        },
         Command::Run { .. } => return Err(ClientError::Protocol),
     };
     rendered.map_err(|_| ClientError::Protocol)

@@ -4,7 +4,7 @@
 //! desktop schema definition for its operation, and every response validated
 //! before it is sent. Only the operations below exist on this endpoint.
 
-use reopen_core::{CheckpointId, ResourcePayload, SessionId};
+use reopen_core::{CheckpointId, ResourcePayload, RestoreRunId, SessionId};
 use reopen_protocol::{
     DecodeError, ErrorCode, PROTOCOL_VERSION, decode_desktop_payload, decode_envelope,
     encode_desktop_payload, generated as wire,
@@ -12,9 +12,12 @@ use reopen_protocol::{
 use reopen_storage::{
     CheckpointDetail, CheckpointSummary, Store, StoreError, WriterError, WriterHandle,
 };
+use std::sync::Arc;
+
 use serde_json::{Map, Value, json};
 use uuid::Uuid;
 
+use crate::restore::{Disposition, RestoreError, Restorer};
 use crate::scheduler::CaptureTrigger;
 
 /// A failed request: stable code, retry hint and a user-safe message.
@@ -51,6 +54,7 @@ pub struct DesktopHandler {
     pub writer: WriterHandle,
     pub trigger: CaptureTrigger,
     pub session_id: SessionId,
+    pub restorer: Arc<Restorer>,
 }
 
 /// Encodes a response envelope.
@@ -78,6 +82,31 @@ pub fn error_frame(request_id: Uuid, failure: &Failure) -> Vec<u8> {
         return Vec::new();
     };
     response_frame(request_id, "error", payload)
+}
+
+fn restore_failure(error: RestoreError) -> Failure {
+    match error {
+        RestoreError::StalePlan => Failure::new(
+            ErrorCode::StalePlan,
+            false,
+            "the plan has expired or was already used; preview again",
+        ),
+        RestoreError::NotFound => Failure::new(
+            ErrorCode::NotFound,
+            false,
+            "no such checkpoint, resource or restore run",
+        ),
+        RestoreError::InProgress => Failure::new(
+            ErrorCode::RestoreInProgress,
+            true,
+            "another restore is still running",
+        ),
+        RestoreError::Storage => Failure::new(
+            ErrorCode::StorageUnavailable,
+            true,
+            "storage is not available",
+        ),
+    }
 }
 
 /// Best-effort request ID from a message that failed validation, so the
@@ -220,6 +249,114 @@ impl DesktopHandler {
                 let id = CheckpointId::from_uuid(request.id);
                 let detail = self.store(move |store| store.checkpoint_detail(id)).await?;
                 Ok(("CheckpointDetail", detail_json(&detail)))
+            }
+            "restore.preview" => {
+                let request: wire::RestorePreviewRequest =
+                    decode_desktop_payload("RestorePreviewRequest", payload)?;
+                let only = (!request.only.is_empty()).then(|| {
+                    request
+                        .only
+                        .iter()
+                        .map(|o| u32::try_from(*o).unwrap_or(u32::MAX))
+                        .collect()
+                });
+                let plan = self
+                    .restorer
+                    .preview(CheckpointId::from_uuid(request.checkpoint_id), only)
+                    .await
+                    .map_err(restore_failure)?;
+                let actions: Vec<_> = plan
+                    .actions
+                    .iter()
+                    .map(|action| {
+                        let (disposition, reason) = match &action.disposition {
+                            Disposition::Launch => ("launch", None),
+                            Disposition::AlreadyOpen => ("already_open", None),
+                            Disposition::Skip(reason) => ("skip", Some(*reason)),
+                        };
+                        json!({
+                            "ordinal": action.ordinal,
+                            "kind": name(&action.kind),
+                            "label": action.label,
+                            "disposition": disposition,
+                            "reason": reason,
+                            "possible_duplicate": action.possible_duplicate,
+                        })
+                    })
+                    .collect();
+                let expires = plan
+                    .expires_at
+                    .saturating_duration_since(tokio::time::Instant::now())
+                    .as_secs();
+                Ok((
+                    "RestorePlan",
+                    json!({
+                        "plan_id": plan.id,
+                        "checkpoint_id": plan.checkpoint_id.to_string(),
+                        "expires_in_seconds": expires,
+                        "warnings": plan.warnings,
+                        "actions": actions,
+                    }),
+                ))
+            }
+            "restore.start" => {
+                let request: wire::RestoreStartRequest =
+                    decode_desktop_payload("RestoreStartRequest", payload)?;
+                let run = self
+                    .restorer
+                    .start(request.plan_id, request.allow_possible_duplicates)
+                    .await
+                    .map_err(restore_failure)?;
+                Ok(("RestoreRunRef", json!({ "run_id": run.to_string() })))
+            }
+            "restore.cancel" => {
+                let request: wire::RestoreRunRef =
+                    decode_desktop_payload("RestoreRunRef", payload)?;
+                let cancelled = self
+                    .restorer
+                    .cancel(RestoreRunId::from_uuid(request.run_id));
+                Ok(("RestoreCancelResult", json!({ "cancelled": cancelled })))
+            }
+            "restore.status" => {
+                let request: wire::RestoreRunRef =
+                    decode_desktop_payload("RestoreRunRef", payload)?;
+                let record = self
+                    .restorer
+                    .status(RestoreRunId::from_uuid(request.run_id))
+                    .await
+                    .map_err(restore_failure)?;
+                let checkpoint = record.checkpoint_id;
+                let detail = self
+                    .store(move |store| store.checkpoint_detail(checkpoint))
+                    .await?;
+                let actions: Vec<_> = record
+                    .actions
+                    .iter()
+                    .map(|action| {
+                        let label = detail
+                            .resources
+                            .iter()
+                            .find(|resource| resource.id == action.resource_id)
+                            .map_or("", |resource| label(&resource.payload));
+                        json!({
+                            "ordinal": action.ordinal,
+                            "label": label,
+                            "state": action.state.as_str(),
+                            "result": action.result_code,
+                        })
+                    })
+                    .collect();
+                Ok((
+                    "RestoreStatus",
+                    json!({
+                        "run_id": record.id.to_string(),
+                        "checkpoint_id": record.checkpoint_id.to_string(),
+                        "state": record.state.as_str(),
+                        "created_at": record.created_at.to_string(),
+                        "completed_at": record.completed_at.map(|at| at.to_string()),
+                        "actions": actions,
+                    }),
+                ))
             }
             _ => Err(Failure::new(
                 ErrorCode::UnsupportedCapability,
