@@ -6,6 +6,11 @@ pub enum StoreError {
     /// The file exists but is not a healthy SQLite database. It is left untouched;
     /// writes stay disabled until the user chooses a recovery action.
     Corrupt,
+    /// The disk (or the database size limit) is full. Nothing was written;
+    /// existing checkpoints are intact.
+    Full,
+    /// The database file or its directory is not writable.
+    ReadOnly,
     /// The database was written by a newer build. Refuse to write.
     NewerSchema {
         found: u32,
@@ -31,6 +36,10 @@ impl fmt::Display for StoreError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Corrupt => f.write_str("the checkpoint database is damaged; writes are disabled"),
+            Self::Full => f.write_str("the disk is full; new checkpoints cannot be saved"),
+            Self::ReadOnly => {
+                f.write_str("the checkpoint database is read-only; writes are disabled")
+            }
             Self::NewerSchema { found, supported } => write!(
                 f,
                 "the checkpoint database uses schema {found}, newer than this version supports ({supported}); update Re-Open"
@@ -74,6 +83,8 @@ impl From<rusqlite::Error> for StoreError {
             Some(rusqlite::ErrorCode::NotADatabase | rusqlite::ErrorCode::DatabaseCorrupt) => {
                 Self::Corrupt
             }
+            Some(rusqlite::ErrorCode::DiskFull) => Self::Full,
+            Some(rusqlite::ErrorCode::ReadOnly) => Self::ReadOnly,
             _ => Self::Sqlite(error),
         }
     }
