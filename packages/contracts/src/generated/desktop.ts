@@ -11,7 +11,13 @@ export type DesktopPayload =
   | CheckpointsListRequest
   | CheckpointsListResult
   | CheckpointGetRequest
-  | CheckpointDetail;
+  | CheckpointDetail
+  | RestorePreviewRequest
+  | RestorePlan
+  | RestoreStartRequest
+  | RestoreRunRef
+  | RestoreCancelResult
+  | RestoreStatus;
 export type CaptureMode = 'active' | 'paused';
 /**
  * UTC timestamp with whole seconds, RFC 3339 (YYYY-MM-DDTHH:MM:SSZ).
@@ -22,6 +28,10 @@ export type Completeness = 'complete' | 'partial';
 export type SourceState =
   'complete' | 'partial' | 'unavailable' | 'stale' | 'excluded' | 'unsupported';
 export type ResourceKind = 'application' | 'project' | 'folder' | 'browser_tab';
+export type Disposition = 'launch' | 'already_open' | 'skip';
+export type RunState = 'queued' | 'running' | 'paused' | 'completed' | 'cancelled' | 'interrupted';
+export type ActionState =
+  'pending' | 'launching' | 'restored' | 'already_open' | 'failed' | 'skipped' | 'uncertain';
 
 /**
  * Request payload for status.get and capture.request.
@@ -91,4 +101,163 @@ export interface ResourceSummary {
    * App ID, path or address shown to the user. Never logged.
    */
   label: string;
+}
+export interface RestorePreviewRequest {
+  checkpoint_id: string;
+  /**
+   * Resource ordinals to include (at least one); all resources when omitted.
+   *
+   * @minItems 1
+   * @maxItems 10000
+   */
+  only?: [number, ...number[]];
+}
+export interface RestorePlan {
+  plan_id: string;
+  checkpoint_id: string;
+  expires_in_seconds: number;
+  /**
+   * @maxItems 16
+   */
+  warnings:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ];
+  /**
+   * @maxItems 10000
+   */
+  actions: PlannedAction[];
+}
+export interface PlannedAction {
+  ordinal: number;
+  kind: ResourceKind;
+  label: string;
+  disposition: Disposition;
+  reason: string | null;
+  /**
+   * Could not rule out that the app is already open; launches only if allowed.
+   */
+  possible_duplicate: boolean;
+}
+export interface RestoreStartRequest {
+  plan_id: string;
+  allow_possible_duplicates: boolean;
+}
+/**
+ * Result of restore.start; request of restore.status and restore.cancel.
+ */
+export interface RestoreRunRef {
+  run_id: string;
+}
+export interface RestoreCancelResult {
+  /**
+   * False when the run had already finished.
+   */
+  cancelled: boolean;
+}
+export interface RestoreStatus {
+  run_id: string;
+  checkpoint_id: string;
+  state: RunState;
+  created_at: Timestamp;
+  completed_at: Timestamp | null;
+  /**
+   * @maxItems 10000
+   */
+  actions: RestoreActionStatus[];
+}
+export interface RestoreActionStatus {
+  ordinal: number;
+  label: string;
+  state: ActionState;
+  result: string | null;
 }

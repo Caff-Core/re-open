@@ -51,6 +51,13 @@ pub trait AppLauncher: Send + Sync {
     ///
     /// [`LaunchError`] when the app cannot be launched safely.
     fn launch(&self, app_id: &str) -> Result<LaunchReceipt, LaunchError>;
+
+    /// Checks that `launch` would be attempted, without side effects.
+    ///
+    /// # Errors
+    ///
+    /// The [`LaunchError`] `launch` would return before starting anything.
+    fn check(&self, app_id: &str) -> Result<(), LaunchError>;
 }
 
 /// Records launches and returns scripted results; for tests.
@@ -79,12 +86,16 @@ impl FakeLauncher {
 }
 
 impl AppLauncher for FakeLauncher {
-    fn launch(&self, app_id: &str) -> Result<LaunchReceipt, LaunchError> {
+    fn check(&self, app_id: &str) -> Result<(), LaunchError> {
         let failures = self.failures.lock().unwrap_or_else(PoisonError::into_inner);
-        if let Some((_, error)) = failures.iter().find(|(id, _)| id == app_id) {
-            return Err(*error);
-        }
-        drop(failures);
+        failures
+            .iter()
+            .find(|(id, _)| id == app_id)
+            .map_or(Ok(()), |(_, error)| Err(*error))
+    }
+
+    fn launch(&self, app_id: &str) -> Result<LaunchReceipt, LaunchError> {
+        self.check(app_id)?;
         let mut launched = self.launched.lock().unwrap_or_else(PoisonError::into_inner);
         launched.push(app_id.to_owned());
         Ok(LaunchReceipt {

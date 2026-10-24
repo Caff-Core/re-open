@@ -247,11 +247,11 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 ### 2.5 Restore plans and action journal — `feat` · [#24](https://github.com/Caff-Core/re-open/issues/24)
 
-- [ ] `restore.preview` with plan ID, selections, warnings and expiry; invalidation on exclusion/resource changes
-- [ ] Persisted attempt marker before each side effect; result afterwards
-- [ ] Serial launches with a 2-second minimum gap, memory check before each action, cancellation
-- [ ] Reconcile `launching` actions on restart as `uncertain`; never replay
-- [ ] App-level duplicate detection (`already_open`)
+- [x] `restore.preview` with plan ID, selections, warnings and expiry; invalidation on exclusion/resource changes
+- [x] Persisted attempt marker before each side effect; result afterwards
+- [x] Serial launches with a 2-second minimum gap, memory check before each action, cancellation
+- [x] Reconcile `launching` actions on restart as `uncertain`; never replay
+- [x] App-level duplicate detection (`already_open`)
 
 ### 2.6 Native validation on the reference machine — `test` · [#25](https://github.com/Caff-Core/re-open/issues/25)
 

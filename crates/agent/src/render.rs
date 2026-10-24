@@ -126,6 +126,97 @@ pub fn detail(payload: Map<String, Value>) -> Result<String, DecodeError> {
     Ok(out)
 }
 
+/// # Errors
+///
+/// [`DecodeError`] if the response does not match `RestorePlan`.
+pub fn plan(payload: Map<String, Value>) -> Result<String, DecodeError> {
+    let plan: wire::RestorePlan = decode_desktop_payload("RestorePlan", payload)?;
+    let mut out = format!(
+        "Plan {} for checkpoint {} (valid for {} s)\n",
+        plan.plan_id, plan.checkpoint_id, plan.expires_in_seconds
+    );
+    for warning in &plan.warnings {
+        let text = match warning.as_str() {
+            "duplicate_detection_limited" => {
+                "only running apps are visible, so some may already be open"
+            }
+            "duplicate_detection_unavailable" => "could not check which apps are already open",
+            other => other,
+        };
+        out.push_str(&format!("Warning: {text}\n"));
+    }
+    let mut launches = 0;
+    for action in &plan.actions {
+        let what = match (&action.disposition, &action.reason) {
+            (wire::Disposition::Launch, _) if action.possible_duplicate => {
+                "launch (may already be open)".to_owned()
+            }
+            (wire::Disposition::Launch, _) => "launch".to_owned(),
+            (wire::Disposition::AlreadyOpen, _) => "already open".to_owned(),
+            (wire::Disposition::Skip, Some(reason)) => format!("skip ({})", reason.as_str()),
+            (wire::Disposition::Skip, None) => "skip".to_owned(),
+        };
+        if action.disposition == wire::Disposition::Launch {
+            launches += 1;
+        }
+        out.push_str(&format!(
+            "  {:>3}  {:<30} {}\n",
+            action.ordinal,
+            what,
+            action.label.as_str()
+        ));
+    }
+    out.push_str(&format!(
+        "{launches} to launch. Start with: restore start {}\n",
+        plan.plan_id
+    ));
+    Ok(out)
+}
+
+/// # Errors
+///
+/// [`DecodeError`] if the response does not match `RestoreRunRef`.
+pub fn run_started(payload: Map<String, Value>) -> Result<String, DecodeError> {
+    let run: wire::RestoreRunRef = decode_desktop_payload("RestoreRunRef", payload)?;
+    Ok(format!(
+        "Restore started: {}\nFollow with: restore status {}\n",
+        run.run_id, run.run_id
+    ))
+}
+
+/// # Errors
+///
+/// [`DecodeError`] if the response does not match `RestoreStatus`.
+pub fn run_status(payload: Map<String, Value>) -> Result<String, DecodeError> {
+    let status: wire::RestoreStatus = decode_desktop_payload("RestoreStatus", payload)?;
+    let mut out = format!("Restore {}: {}\n", status.run_id, name(&status.state));
+    for action in &status.actions {
+        let result = action
+            .result
+            .as_ref()
+            .map_or(String::new(), |result| format!(" ({})", result.as_str()));
+        out.push_str(&format!(
+            "  {:>3}  {:<13}{result}  {}\n",
+            action.ordinal,
+            name(&action.state),
+            action.label.as_str()
+        ));
+    }
+    Ok(out)
+}
+
+/// # Errors
+///
+/// [`DecodeError`] if the response does not match `RestoreCancelResult`.
+pub fn run_cancelled(payload: Map<String, Value>) -> Result<String, DecodeError> {
+    let result: wire::RestoreCancelResult = decode_desktop_payload("RestoreCancelResult", payload)?;
+    Ok(if result.cancelled {
+        "Cancelling: no further apps will be launched; ones already started stay open.\n".to_owned()
+    } else {
+        "That restore is not running.\n".to_owned()
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;

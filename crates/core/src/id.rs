@@ -79,6 +79,19 @@ uuid_id!(
     SourceId
 );
 
+uuid_id!(
+    /// One restore run: a user-approved plan being executed.
+    RestoreRunId
+);
+uuid_id!(
+    /// One action within a restore run.
+    RestoreActionId
+);
+uuid_id!(
+    /// One attempt at an action's side effect, recorded before it happens.
+    AttemptId
+);
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -130,8 +130,9 @@ fn run_bounded(mut command: Command) -> Result<(), LaunchError> {
     }
 }
 
-impl AppLauncher for LinuxLauncher {
-    fn launch(&self, app_id: &str) -> Result<LaunchReceipt, LaunchError> {
+impl LinuxLauncher {
+    /// Resolves what would be launched: the app and its validated program.
+    fn resolve(&self, app_id: &str) -> Result<(AppIdentity, PathBuf), LaunchError> {
         let catalog = Catalog::load(&self.data_dirs);
         let app = catalog.find(app_id).ok_or(LaunchError::NotInstalled)?;
         if !self.exclusions.allows(app) {
@@ -142,15 +143,34 @@ impl AppLauncher for LinuxLauncher {
             .map_err(|error| match error {
                 ExecError::Missing | ExecError::UnexpectedRunner => LaunchError::ExecutableMissing,
             })?;
-        let systemd_run = match &self.systemd_run {
+        Ok((app.clone(), program))
+    }
+
+    fn systemd_run(&self) -> Result<PathBuf, LaunchError> {
+        match &self.systemd_run {
             Some(path) => Some(path.clone()),
             None => resolve_program("systemd-run", self.path_var.as_ref()),
         }
-        .ok_or(LaunchError::Unsupported)?;
+        .ok_or(LaunchError::Unsupported)
+    }
+}
 
+impl AppLauncher for LinuxLauncher {
+    fn check(&self, app_id: &str) -> Result<(), LaunchError> {
+        self.resolve(app_id)?;
+        self.systemd_run().map(drop)
+    }
+
+    fn launch(&self, app_id: &str) -> Result<LaunchReceipt, LaunchError> {
+        let (app, program) = self.resolve(app_id)?;
         let unit = self.unit_name(&app.desktop_id);
-        let mut command = Command::new(systemd_run);
-        command.args(systemd_run_args(app, &program, &unit, self.home.as_deref()));
+        let mut command = Command::new(self.systemd_run()?);
+        command.args(systemd_run_args(
+            &app,
+            &program,
+            &unit,
+            self.home.as_deref(),
+        ));
         run_bounded(command)?;
         Ok(LaunchReceipt { handle: unit })
     }
