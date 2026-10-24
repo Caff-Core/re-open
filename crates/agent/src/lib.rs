@@ -5,4 +5,5 @@
 //! composes it with real adapters and local IPC.
 
 pub mod capture;
+pub mod memory;
 pub mod scheduler;
