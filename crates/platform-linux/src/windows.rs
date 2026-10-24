@@ -93,26 +93,35 @@ fn unescape_unit(text: &str) -> String {
 }
 
 /// The application ID encoded in a systemd user unit name, if any:
-/// `app-gnome-<id>-<n>.scope`, `app-flatpak-<id>-<n>.scope`,
-/// `app-<id>-<n>.scope` and D-Bus-activated `dbus-<bus>-<id>@<n>.service`.
+/// `app-<launcher>-<id>-<n>.scope|.service` (launchers `gnome`, `flatpak`,
+/// `reopen`), `app-<id>-<n>.scope` and D-Bus-activated
+/// `dbus-<bus>-<id>@<n>.service`. Template instances such as
+/// `app-gnome-<id>@autostart.service` are autostarted helpers and are skipped.
 #[must_use]
 pub fn unit_app_id(unit: &str) -> Option<String> {
-    if let Some(scope) = unit.strip_suffix(".scope") {
-        let rest = scope.strip_prefix("app-")?;
-        let rest = rest
-            .strip_prefix("gnome-")
-            .or_else(|| rest.strip_prefix("flatpak-"))
-            .unwrap_or(rest);
-        let (id, instance) = rest.rsplit_once('-')?;
-        if id.is_empty() || instance.is_empty() {
-            return None;
-        }
-        return Some(unescape_unit(id));
+    if let Some(service) = unit.strip_suffix(".service")
+        && let Some(activated) = service.strip_prefix("dbus-")
+    {
+        let (_bus, activated) = activated.split_once('-')?;
+        let id = activated.split('@').next()?;
+        return (!id.is_empty()).then(|| unescape_unit(id));
     }
-    let service = unit.strip_suffix(".service")?.strip_prefix("dbus-")?;
-    let (_bus, activated) = service.split_once('-')?;
-    let id = activated.split('@').next()?;
-    (!id.is_empty()).then(|| unescape_unit(id))
+    let name = unit
+        .strip_suffix(".scope")
+        .or_else(|| unit.strip_suffix(".service"))?;
+    if name.contains('@') {
+        return None;
+    }
+    let rest = name.strip_prefix("app-")?;
+    let rest = ["gnome-", "flatpak-", "reopen-"]
+        .iter()
+        .find_map(|launcher| rest.strip_prefix(launcher))
+        .unwrap_or(rest);
+    let (id, instance) = rest.rsplit_once('-')?;
+    if id.is_empty() || instance.is_empty() || !instance.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    Some(unescape_unit(id))
 }
 
 /// Why the extension could not be used; any of these selects the fallback.
@@ -217,7 +226,10 @@ pub fn running_app_units() -> Option<Vec<String>> {
                 "/org/freedesktop/systemd1",
                 Some("org.freedesktop.systemd1.Manager"),
                 "ListUnitsByPatterns",
-                &(vec!["active"], vec!["app-*.scope", "dbus-*.service"]),
+                &(
+                    vec!["active"],
+                    vec!["app-*.scope", "app-*.service", "dbus-*.service"],
+                ),
             )
             .await
             .ok()?;
@@ -258,6 +270,19 @@ mod tests {
         assert_eq!(unit_app_id("session-2.scope"), None);
         assert_eq!(unit_app_id("app-.scope"), None);
         assert_eq!(unit_app_id("pipewire.service"), None);
+        assert_eq!(
+            unit_app_id(r"app-reopen-org.gnome.Calculator-12340.service").as_deref(),
+            Some("org.gnome.Calculator")
+        );
+        assert_eq!(
+            unit_app_id("app-gnome-org.kde.kdeconnect.daemon@autostart.service"),
+            None
+        );
+        assert_eq!(
+            unit_app_id("app-gnome-xdg-user-dirs-update.service"),
+            None,
+            "instance must be numeric"
+        );
     }
 
     #[test]
