@@ -5,18 +5,30 @@
 //! input: decode messages with the functions in this module, which enforce
 //! size limits, the protocol version and the canonical schema first.
 
+use std::collections::HashMap;
 use std::fmt;
-use std::sync::LazyLock;
+use std::sync::{LazyLock, Mutex, PoisonError};
 
 use jsonschema::Validator;
 use serde::de::DeserializeOwned;
-use serde_json::Value;
+use serde_json::{Map, Value};
 
-#[allow(clippy::all, missing_debug_implementations)]
+#[allow(clippy::all, clippy::unwrap_used, clippy::expect_used, missing_debug_implementations)]
 #[rustfmt::skip]
 pub mod generated;
 
 pub use generated::{Envelope, ErrorCode, ErrorResponse};
+
+/// Desktop schema definitions with a validator, used with [`decode_desktop_payload`].
+pub const DESKTOP_DEFINITIONS: &[&str] = &[
+    "EmptyRequest",
+    "StatusResult",
+    "CaptureRequestResult",
+    "CheckpointsListRequest",
+    "CheckpointsListResult",
+    "CheckpointGetRequest",
+    "CheckpointDetail",
+];
 
 /// Protocol major version this build speaks.
 pub const PROTOCOL_VERSION: u64 = 1;
@@ -26,6 +38,7 @@ pub const MAX_MESSAGE_BYTES: usize = 256 * 1024;
 const ENVELOPE_SCHEMA: &str =
     include_str!("../../../packages/contracts/schema/envelope.schema.json");
 const ERROR_SCHEMA: &str = include_str!("../../../packages/contracts/schema/error.schema.json");
+const DESKTOP_SCHEMA: &str = include_str!("../../../packages/contracts/schema/desktop.schema.json");
 
 #[allow(clippy::expect_used)] // Embedded constant schemas; compilation is covered by tests.
 fn compile(schema: &str) -> Validator {
@@ -117,6 +130,77 @@ pub fn decode_envelope(bytes: &[u8]) -> Result<Envelope, DecodeError> {
     validate(&ENVELOPE_VALIDATOR, value)
 }
 
+/// Desktop payload definitions with a compiled validator each, built on first use.
+static DESKTOP_VALIDATORS: LazyLock<Mutex<HashMap<&'static str, &'static Validator>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+/// Compiles `#/definitions/<name>` of the desktop schema as a root schema.
+#[allow(clippy::expect_used)] // Embedded constant schema; every definition is covered by tests.
+fn desktop_validator(definition: &'static str) -> &'static Validator {
+    let mut cache = DESKTOP_VALIDATORS
+        .lock()
+        .unwrap_or_else(PoisonError::into_inner);
+    cache.entry(definition).or_insert_with(|| {
+        let mut schema: Value =
+            serde_json::from_str(DESKTOP_SCHEMA).expect("embedded schema is valid JSON");
+        let root = schema.as_object_mut().expect("schema is an object");
+        assert!(
+            root.get("definitions")
+                .and_then(|d| d.get(definition))
+                .is_some(),
+            "unknown desktop definition {definition}"
+        );
+        root.remove("oneOf");
+        root.insert(
+            "$ref".to_owned(),
+            Value::String(format!("#/definitions/{definition}")),
+        );
+        // Validators live for the whole process; there are a handful of definitions.
+        Box::leak(Box::new(
+            jsonschema::validator_for(&schema).expect("desktop schema compiles"),
+        ))
+    })
+}
+
+/// Validates an envelope payload against a desktop schema definition, for
+/// example `CheckpointsListRequest`, then decodes it into the generated type.
+///
+/// # Errors
+///
+/// [`DecodeError::InvalidPayload`] naming the schema path that failed.
+pub fn decode_desktop_payload<T: DeserializeOwned>(
+    definition: &'static str,
+    payload: Map<String, Value>,
+) -> Result<T, DecodeError> {
+    validate(desktop_validator(definition), Value::Object(payload))
+}
+
+/// Encodes a desktop payload, checking it against its schema definition first
+/// so the agent never sends a response the schema rejects.
+///
+/// # Errors
+///
+/// [`DecodeError::InvalidPayload`] if the value violates the definition.
+pub fn encode_desktop_payload<T: serde::Serialize>(
+    definition: &'static str,
+    value: &T,
+) -> Result<Map<String, Value>, DecodeError> {
+    let encoded = serde_json::to_value(value).map_err(|_| DecodeError::InvalidPayload {
+        detail: "could not encode".to_owned(),
+    })?;
+    if let Some(error) = desktop_validator(definition).iter_errors(&encoded).next() {
+        return Err(DecodeError::InvalidPayload {
+            detail: format!("schema violation at {}", error.schema_path()),
+        });
+    }
+    match encoded {
+        Value::Object(map) => Ok(map),
+        _ => Err(DecodeError::InvalidPayload {
+            detail: "payload is not an object".to_owned(),
+        }),
+    }
+}
+
 /// Decodes and validates one error response from untrusted bytes.
 ///
 /// # Errors
@@ -134,6 +218,38 @@ mod tests {
     fn embedded_schemas_compile() {
         LazyLock::force(&ENVELOPE_VALIDATOR);
         LazyLock::force(&ERROR_VALIDATOR);
+    }
+
+    #[test]
+    fn every_desktop_definition_compiles() {
+        for definition in DESKTOP_DEFINITIONS {
+            desktop_validator(definition);
+        }
+    }
+
+    #[test]
+    fn desktop_payload_limits_are_enforced() {
+        let ok = serde_json::json!({ "limit": 200 })
+            .as_object()
+            .cloned()
+            .unwrap();
+        let request: generated::CheckpointsListRequest =
+            decode_desktop_payload("CheckpointsListRequest", ok).unwrap();
+        assert_eq!(request.limit.get(), 200);
+        for bad in [
+            serde_json::json!({ "limit": 201 }),
+            serde_json::json!({ "limit": 0 }),
+            serde_json::json!({}),
+            serde_json::json!({ "limit": 5, "x": 1 }),
+        ] {
+            let payload = bad.as_object().cloned().unwrap();
+            let result: Result<generated::CheckpointsListRequest, _> =
+                decode_desktop_payload("CheckpointsListRequest", payload);
+            assert!(
+                matches!(result, Err(DecodeError::InvalidPayload { .. })),
+                "{bad}"
+            );
+        }
     }
 
     #[test]

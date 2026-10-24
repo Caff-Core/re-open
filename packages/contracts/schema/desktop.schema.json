@@ -1,0 +1,278 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:reopen:schema:desktop",
+  "title": "DesktopPayload",
+  "description": "Payloads of desktop-role operations (docs/PROTOCOL.md). Requests use kind `<operation>`; successful responses use `<operation>.result` with the matching result payload.",
+  "oneOf": [
+    {
+      "$ref": "#/definitions/EmptyRequest"
+    },
+    {
+      "$ref": "#/definitions/StatusResult"
+    },
+    {
+      "$ref": "#/definitions/CaptureRequestResult"
+    },
+    {
+      "$ref": "#/definitions/CheckpointsListRequest"
+    },
+    {
+      "$ref": "#/definitions/CheckpointsListResult"
+    },
+    {
+      "$ref": "#/definitions/CheckpointGetRequest"
+    },
+    {
+      "$ref": "#/definitions/CheckpointDetail"
+    }
+  ],
+  "definitions": {
+    "Timestamp": {
+      "description": "UTC timestamp with whole seconds, RFC 3339 (YYYY-MM-DDTHH:MM:SSZ).",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "EmptyRequest": {
+      "description": "Request payload for status.get and capture.request.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {}
+    },
+    "CaptureMode": {
+      "type": "string",
+      "enum": ["active", "paused"]
+    },
+    "CaptureReason": {
+      "type": "string",
+      "enum": ["scheduled", "manual", "shutdown"]
+    },
+    "Completeness": {
+      "type": "string",
+      "enum": ["complete", "partial"]
+    },
+    "SourceState": {
+      "type": "string",
+      "enum": ["complete", "partial", "unavailable", "stale", "excluded", "unsupported"]
+    },
+    "ResourceKind": {
+      "type": "string",
+      "enum": ["application", "project", "folder", "browser_tab"]
+    },
+    "CheckpointSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "session_id",
+        "captured_at",
+        "reason",
+        "completeness",
+        "resource_count",
+        "protected"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "captured_at": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "reason": {
+          "$ref": "#/definitions/CaptureReason"
+        },
+        "completeness": {
+          "$ref": "#/definitions/Completeness"
+        },
+        "resource_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "protected": {
+          "description": "Pinned or a pending recovery candidate.",
+          "type": "boolean"
+        }
+      }
+    },
+    "StatusResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_version",
+        "protocol_version",
+        "session_id",
+        "capture",
+        "last_checkpoint",
+        "pending_candidates"
+      ],
+      "properties": {
+        "agent_version": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "protocol_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "capture": {
+          "$ref": "#/definitions/CaptureMode"
+        },
+        "last_checkpoint": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/CheckpointSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_candidates": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "CaptureRequestResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accepted"],
+      "properties": {
+        "accepted": {
+          "description": "False when a request was already pending and this one was merged into it.",
+          "type": "boolean"
+        }
+      }
+    },
+    "CheckpointsListRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["limit"],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        }
+      }
+    },
+    "CheckpointsListResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoints"],
+      "properties": {
+        "checkpoints": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/definitions/CheckpointSummary"
+          }
+        }
+      }
+    },
+    "CheckpointGetRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "SourceSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_key", "state", "required", "captured_at", "error"],
+      "properties": {
+        "source_key": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "state": {
+          "$ref": "#/definitions/SourceState"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "captured_at": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "ResourceSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "kind", "adapter_id", "label"],
+      "properties": {
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "kind": {
+          "$ref": "#/definitions/ResourceKind"
+        },
+        "adapter_id": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "label": {
+          "description": "App ID, path or address shown to the user. Never logged.",
+          "type": "string",
+          "maxLength": 8192
+        }
+      }
+    },
+    "CheckpointDetail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "sources", "resources"],
+      "properties": {
+        "summary": {
+          "$ref": "#/definitions/CheckpointSummary"
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/definitions/SourceSummary"
+          }
+        },
+        "resources": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/definitions/ResourceSummary"
+          }
+        }
+      }
+    }
+  }
+}

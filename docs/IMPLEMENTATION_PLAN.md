@@ -194,11 +194,11 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.8 Agent binary, local IPC and CLI — `feat` · [#18](https://github.com/Caff-Core/re-open/issues/18)
 
-- [ ] `crates/agent` binary `reopen-agent` with per-user singleton lock and readiness handshake
-- [ ] XDG data directory; isolated development directory used by `pnpm dev:agent`
-- [ ] Desktop-role Unix socket endpoint (`0600`, `SO_PEERCRED` UID check, 4-byte little-endian framing, 16 outstanding requests)
-- [ ] CLI subcommands: `status`, `capture`, `history`, `checkpoint show`
-- [ ] Redacted `tracing` logging with rotation (3 × 1 MiB); no addresses, paths or titles
+- [x] `crates/agent` binary `reopen-agent` with per-user singleton lock and readiness handshake
+- [x] XDG data directory; isolated development directory used by `pnpm dev:agent`
+- [x] Desktop-role Unix socket endpoint (`0600`, `SO_PEERCRED` UID check, 4-byte little-endian framing, 16 outstanding requests)
+- [x] CLI subcommands: `status`, `capture`, `history`, `checkpoint show`
+- [x] Redacted `tracing` logging with rotation (3 × 1 MiB); no addresses, paths or titles
 
 ### 1.9 Durability test suite — `test` · [#19](https://github.com/Caff-Core/re-open/issues/19)
 
