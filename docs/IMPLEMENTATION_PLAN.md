@@ -177,9 +177,9 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.5 Capture scheduler and fake provider — `feat` · [#15](https://github.com/Caff-Core/re-open/issues/15)
 
-- [ ] Tokio scheduler, 60-second default, serialised cycles with coalesced ticks
-- [ ] Provider deadlines (5 s each, 10 s total) producing partial status with stable error codes
-- [ ] `platform` crate traits plus a configurable fake provider (complete, partial, timeout, empty)
+- [x] Tokio scheduler, 60-second default, serialised cycles with coalesced ticks
+- [x] Provider deadlines (5 s each, 10 s total) producing partial status with stable error codes
+- [x] `platform` crate traits plus a configurable fake provider (complete, partial, timeout, empty)
 
 ### 1.6 Manual checkpoints, pins and retention — `feat` · [#16](https://github.com/Caff-Core/re-open/issues/16)
 
