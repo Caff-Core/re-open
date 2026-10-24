@@ -7,5 +7,6 @@ export interface StandaloneValidator {
   errors?: ErrorObject[] | null;
 }
 
+export declare const validateDesktopPayload: StandaloneValidator;
 export declare const validateEnvelope: StandaloneValidator;
 export declare const validateErrorResponse: StandaloneValidator;

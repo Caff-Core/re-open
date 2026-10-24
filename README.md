@@ -67,6 +67,10 @@ sudo dnf group install c-development
 
 `libappindicator-gtk3-devel` is only needed to build tray support; GNOME shows tray icons only with an AppIndicator extension installed (see [Desktop interface](docs/UI.md)).
 
+## Running the agent (development)
+
+`pnpm dev:agent` runs `reopen-agent --dev run` against the isolated `reopen-dev` directories with the fake desktop provider (real adapters arrive in Phase 2). In another terminal: `cargo run -q -p reopen-agent -- --dev status`, `capture`, `history`, or `checkpoint show <id>`. Exit codes: 3 another agent is running, 4 storage is damaged or newer (capture disabled), 5 no agent is running.
+
 ## Working on the project
 
 Pick the next open task in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md); each task has a GitHub issue and one branch/PR. Coding agents start from [AGENTS.md](AGENTS.md). No build commands are claimed to work until the corresponding manifests and scripts exist (tasks 0.4–0.10).

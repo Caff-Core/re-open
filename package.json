@@ -17,7 +17,7 @@
     "contracts:generate": "pnpm --filter @workspace/contracts run generate && cargo run -q -p reopen-protocol-codegen",
     "contracts:check": "pnpm --filter @workspace/contracts run generate --check && cargo run -q -p reopen-protocol-codegen -- --check",
     "dev:desktop": "pnpm --filter @workspace/desktop tauri dev",
-    "dev:agent": "node scripts/pending.mjs dev:agent 1.8",
+    "dev:agent": "cargo run -q -p reopen-agent -- --dev run",
     "dev:extension": "node scripts/pending.mjs dev:extension 3.4",
     "package:linux": "node scripts/pending.mjs package:linux 6.1"
   },

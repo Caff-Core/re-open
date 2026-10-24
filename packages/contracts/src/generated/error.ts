@@ -14,7 +14,8 @@ export type ErrorCode =
   | 'MEMORY_PRESSURE'
   | 'STORAGE_UNAVAILABLE'
   | 'TIMEOUT'
-  | 'UNSUPPORTED_CAPABILITY';
+  | 'UNSUPPORTED_CAPABILITY'
+  | 'NOT_FOUND';
 
 /**
  * Error returned for a request. The message is user-safe and redacted.

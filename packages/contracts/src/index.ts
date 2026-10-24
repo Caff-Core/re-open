@@ -9,6 +9,7 @@ import {
 } from './generated/validators.js';
 
 export type { Envelope, ErrorCode, ErrorResponse };
+export type * from './generated/desktop';
 
 /** Protocol major version this build speaks. */
 export const PROTOCOL_VERSION = 1;

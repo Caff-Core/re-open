@@ -36,7 +36,8 @@
         "MEMORY_PRESSURE",
         "STORAGE_UNAVAILABLE",
         "TIMEOUT",
-        "UNSUPPORTED_CAPABILITY"
+        "UNSUPPORTED_CAPABILITY",
+        "NOT_FOUND"
       ]
     }
   }
