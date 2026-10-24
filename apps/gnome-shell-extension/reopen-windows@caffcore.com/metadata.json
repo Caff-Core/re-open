@@ -1,0 +1,8 @@
+{
+  "uuid": "reopen-windows@caffcore.com",
+  "name": "Re-Open window list",
+  "description": "Lets the Re-Open agent see which application windows are open. Read-only: exposes application IDs, process IDs and window state over the session bus, never window titles or contents.",
+  "shell-version": ["50"],
+  "url": "https://github.com/Caff-Core/re-open",
+  "version-name": "0.1.0"
+}

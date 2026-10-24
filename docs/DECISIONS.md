@@ -102,9 +102,26 @@ Upgrades happen in dedicated `chore` PRs that re-check these constraints and upd
 - `protocol_version`, the database schema version and the extension compatibility matrix are separate counters (`docs/PROTOCOL.md`, `docs/DATA_MODEL.md`, task 6.4); bumping the app version does not change them, and changing them requires an app version bump.
 - Release tags are `vX.Y.Z`.
 
+## ADR-016: Window discovery on GNOME Wayland
+
+**Status:** accepted (2026-10-24, spike 2.1 on Fedora 44, GNOME Shell 50.6, Wayland). Wayland gives ordinary clients no global window list, so the options were measured on the reference machine:
+
+| Option                                  | Result                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `org.gnome.Shell.Introspect.GetWindows` | Refused: `AccessDenied: GetWindows is not allowed`, even with `development-tools` enabled. GNOME restricts it to allowlisted callers. Rejected.                                                                                                                                                                                                                                                                                                     |
+| XWayland `_NET_CLIENT_LIST`             | Sees only X11 clients; native Wayland windows (most GTK 4 and libadwaita apps) are invisible. Rejected as a source of truth.                                                                                                                                                                                                                                                                                                                        |
+| systemd user units                      | GNOME launches apps into `app-gnome-<desktop-id>-<pid>.scope`, `app-flatpak-<app-id>-<n>.scope` or D-Bus-activated `dbus-…-<app-id>@<n>.service` units, which identify apps by desktop ID without any window access. Inaccurate as a window list: includes background daemons (tray apps, `kdeconnect`, a browser search provider) and misses apps started from a terminal, which sit in the terminal's unit. Accepted as a labelled fallback only. |
+| Companion GNOME Shell extension         | Verified in a private headless GNOME Shell 50 (`scripts/test-gnome-extension.sh`): returns one entry per normal window with the `.desktop` app ID, PID, window ID, workspace and minimized state. Accepted as the primary source.                                                                                                                                                                                                                   |
+
+Decision:
+
+- **Primary provider `linux.gnome-shell`**: the `reopen-windows@caffcore.com` extension (`apps/gnome-shell-extension`) exports the read-only `com.caffcore.ReOpen.Windows1.GetWindows` on the session bus at `/com/caffcore/ReOpen/Windows`, plus a `Version` property (API version 1). It exposes no window titles or contents. Anything running as the user can call it, which is the same-user boundary the agent already has (docs/SECURITY.md).
+- **Fallback provider `linux.systemd-units`**, used when the extension is not installed, not enabled or reports an unsupported API version: lists apps by desktop ID from the units above. Its source state is `partial` with an explicit limited-visibility error, so a checkpoint built from it is never labelled complete, and the interface explains that window visibility needs the extension.
+- **Maintenance cost**: `shell-version` must be bumped and verified for each GNOME release (about every six months) with the headless test script. A newly installed extension is loaded by GNOME Shell on Wayland only after logging out and back in.
+- Installation: a development install script comes with task 2.3; packaged installation and enablement belong to task 6.2. The agent never enables the extension itself.
+
 ## Open decisions
 
-- Window enumeration approach on GNOME Wayland (task 2.1).
 - Tray fallback on stock GNOME (task 4.1).
 - Signing and distribution approach for RPM, AppImage and extension packages.
 - Verify editor/project discovery for VS Code, Zed and Android Studio (tasks 5.1–5.3).

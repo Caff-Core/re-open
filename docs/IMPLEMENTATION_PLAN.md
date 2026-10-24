@@ -221,10 +221,10 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 ### 2.1 Spike: window enumeration on GNOME Wayland — `spike` · [#20](https://github.com/Caff-Core/re-open/issues/20)
 
-- [ ] Evaluate `org.gnome.Shell.Introspect` availability and access rules on GNOME 50
-- [ ] Evaluate a minimal companion GNOME Shell extension exposing a read-only D-Bus window list
-- [ ] Evaluate XWayland/X11 `_NET_CLIENT_LIST` coverage and a process + `.desktop` matching fallback
-- [ ] Record capability matrix and chosen approach as an ADR
+- [x] Evaluate `org.gnome.Shell.Introspect` availability and access rules on GNOME 50
+- [x] Evaluate a minimal companion GNOME Shell extension exposing a read-only D-Bus window list
+- [x] Evaluate XWayland/X11 `_NET_CLIENT_LIST` coverage and a process + `.desktop` matching fallback
+- [x] Record capability matrix and chosen approach as an ADR
 
 ### 2.2 `platform-linux` application identity — `feat` · [#21](https://github.com/Caff-Core/re-open/issues/21)
 
@@ -234,7 +234,10 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 ### 2.3 Window discovery adapter — `feat` · [#22](https://github.com/Caff-Core/re-open/issues/22)
 
-- [ ] Implement the approach chosen in 2.1 (including the GNOME Shell extension under `apps/gnome-shell-extension` if selected)
+- [ ] Primary provider `linux.gnome-shell`: D-Bus client for `com.caffcore.ReOpen.Windows1.GetWindows` (ADR-016), checking the `Version` property; extension prototype in `apps/gnome-shell-extension`
+- [ ] Fallback provider `linux.systemd-units`: app IDs from `app-gnome-*`, `app-flatpak-*` and D-Bus-activated user units, reported as `partial` with a limited-visibility error
+- [ ] Development install script for the extension (copy to the user extensions directory; the user enables it and logs in again)
+- [ ] Headless extension check (`scripts/test-gnome-extension.sh`) documented in TESTING_RELEASE
 - [ ] Bounded probe workers and timeouts; unsupported capability reported, never guessed
 
 ### 2.4 Conservative launch adapter — `feat` · [#23](https://github.com/Caff-Core/re-open/issues/23)

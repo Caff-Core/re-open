@@ -23,7 +23,7 @@ This is a target layout. Only Markdown files exist in the initial pack.
       src/background/         # Manifest V3 event handling
       src/popup/              # Minimal status and pause controls
       manifests/              # Chromium (Brave) and Firefox manifest variants
-    gnome-shell-extension/    # Only if selected by spike 2.1
+    gnome-shell-extension/    # Read-only window list for the agent (ADR-016)
   crates/
     agent/                    # Background binary
     core/                     # Domain types and policies

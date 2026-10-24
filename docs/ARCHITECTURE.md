@@ -52,7 +52,7 @@ Use Tokio for timers and local IPC, with bounded channels. Move blocking SQLite 
 
 An adapter returns capabilities such as `discover_app`, `discover_project`, `restore_app`, `restore_project`, `detect_existing` and later `restore_geometry`. Every captured resource records its adapter and schema version. Missing capability produces an unsupported/skipped result, never guessed behavior.
 
-`sysinfo` supplies process and memory data; on Linux, `/proc/pressure/memory` adds a pressure signal where available. Visible application discovery still requires platform APIs. GNOME on Wayland exposes no global window list to ordinary clients, so the Linux window-discovery approach is an explicit spike (task 2.1) and may report `unsupported` rather than guess. Do not store every process as an app or infer open resources from arbitrary process command lines.
+`sysinfo` supplies process and memory data; on Linux, `/proc/pressure/memory` adds a pressure signal where available. Visible application discovery still requires platform APIs. GNOME on Wayland exposes no global window list to ordinary clients, so visible windows come from a companion GNOME Shell extension; without it, a systemd-unit fallback reports running apps as a `partial` source ([ADR-016](DECISIONS.md#adr-016-window-discovery-on-gnome-wayland)). Do not store every process as an app or infer open resources from arbitrary process command lines.
 
 ## Failure isolation
 
