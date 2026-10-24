@@ -242,8 +242,8 @@ Goal: discover visible GNOME applications on Wayland and reopen user-selected ap
 
 ### 2.4 Conservative launch adapter — `feat` · [#23](https://github.com/Caff-Core/re-open/issues/23)
 
-- [ ] Launch from validated desktop entries with argument arrays (field codes stripped; never a shell string); `flatpak run <app-id>` for Flatpak apps
-- [ ] Reject changed or missing executables instead of searching for same-named binaries
+- [x] Launch from validated desktop entries with argument arrays (field codes stripped; never a shell string); `flatpak run <app-id>` for Flatpak apps
+- [x] Reject changed or missing executables instead of searching for same-named binaries
 
 ### 2.5 Restore plans and action journal — `feat` · [#24](https://github.com/Caff-Core/re-open/issues/24)
 

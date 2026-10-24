@@ -8,6 +8,7 @@ use reopen_core::checkpoint::ProviderError;
 use reopen_core::{AdapterRef, CapabilitySet, ResourcePayload};
 
 pub mod fake;
+pub mod launch;
 pub mod memory;
 
 /// The state a provider reports for a capture it finished.

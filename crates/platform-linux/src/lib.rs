@@ -8,8 +8,10 @@
 
 pub mod catalog;
 pub mod desktop;
+pub mod launch;
 pub mod provider;
 pub mod windows;
 
 pub use catalog::{AppIdentity, AppKind, Catalog, ExclusionPolicy, ExecError, data_dirs};
+pub use launch::LinuxLauncher;
 pub use provider::GnomeAppsProvider;
