@@ -130,20 +130,22 @@ impl CaptureEngine {
         let mut resources = Vec::new();
         for (slot, result) in self.slots.iter().zip(results) {
             let provider = &slot.provider;
-            let (state, error, captured) = match result {
+            let (state, error, captured, used_adapter) = match result {
                 Ok(ProviderCapture {
                     state: CaptureState::Complete,
                     resources: found,
-                }) => (SourceState::Complete, None, Some(found)),
+                    adapter,
+                }) => (SourceState::Complete, None, Some(found), adapter),
                 Ok(ProviderCapture {
                     state: CaptureState::Partial(error),
                     resources: found,
-                }) => (SourceState::Partial, Some(error), Some(found)),
-                Err(error) => (SourceState::Unavailable, Some(error), None),
+                    adapter,
+                }) => (SourceState::Partial, Some(error), Some(found), adapter),
+                Err(error) => (SourceState::Unavailable, Some(error), None, None),
             };
             let observed = captured.is_some().then_some(captured_at);
             if let Some(found) = captured {
-                let adapter = provider.adapter();
+                let adapter = used_adapter.unwrap_or_else(|| provider.adapter());
                 for payload in found {
                     let ordinal = u32::try_from(resources.len()).unwrap_or(u32::MAX);
                     resources.push(Resource {

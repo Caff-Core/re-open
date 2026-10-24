@@ -26,6 +26,11 @@ pub enum ProviderError {
     LimitExceeded,
     MemoryPressure,
     Failed,
+    /// The provider sees running apps but cannot see their windows (for
+    /// example, GNOME without the Re-Open window-list extension).
+    LimitedVisibility,
+    /// Some windows could not be matched to an installed application.
+    UnidentifiedWindows,
 }
 
 /// The state of one provider or source within a checkpoint.

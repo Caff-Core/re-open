@@ -18,6 +18,8 @@ Use Rust's test framework, temporary databases, fake clocks/providers and Vitest
 
 Native validation runs on the development machine: Fedora 44 x86_64, GNOME 50 on Wayland, 15 GiB RAM, Brave and Firefox from native RPMs. Record the kernel, GNOME Shell, Brave and Firefox versions with each native test run and each performance measurement. Results from CI containers or other desktops do not substitute for this machine.
 
+GNOME window discovery is checked natively in two ways: `pnpm gnome-extension:test` loads the extension into a private headless GNOME Shell (own session bus and XDG directories) and calls `GetWindows` against real test apps, and `crates/platform-linux/tests/host_catalog.rs` captures the live session when one is present, asserting the honest state for whichever adapter answered. CI has no GNOME session, so both skip there.
+
 ## Critical failure cases
 
 1. Terminate the writer at transaction boundaries; the prior committed checkpoint survives.

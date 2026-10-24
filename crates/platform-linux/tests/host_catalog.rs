@@ -26,3 +26,37 @@ fn the_host_catalog_loads_and_every_entry_is_launchable_as_an_argv() {
         "some app should be capturable"
     );
 }
+
+#[test]
+fn the_host_session_is_captured_with_an_honest_state() {
+    use reopen_core::checkpoint::ProviderError;
+    use reopen_platform::{CaptureProvider, CaptureState};
+    use reopen_platform_linux::GnomeAppsProvider;
+
+    if std::env::var_os("DBUS_SESSION_BUS_ADDRESS").is_none() {
+        return; // No desktop session (CI): nothing to observe.
+    }
+    let provider = GnomeAppsProvider::from_env(ExclusionPolicy::default());
+    let Ok(capture) = provider.capture() else {
+        return; // A session bus without a user systemd manager.
+    };
+    let adapter = capture.adapter.clone().unwrap().id;
+    eprintln!(
+        "adapter={adapter} state={:?} apps={}",
+        capture.state,
+        capture.resources.len()
+    );
+    match adapter.as_str() {
+        "linux.systemd-units" => {
+            assert_eq!(
+                capture.state,
+                CaptureState::Partial(ProviderError::LimitedVisibility)
+            );
+        }
+        "linux.gnome-shell" => assert!(matches!(
+            capture.state,
+            CaptureState::Complete | CaptureState::Partial(ProviderError::UnidentifiedWindows)
+        )),
+        other => panic!("unexpected adapter {other}"),
+    }
+}

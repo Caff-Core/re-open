@@ -69,7 +69,7 @@ sudo dnf group install c-development
 
 ## Running the agent (development)
 
-`pnpm dev:agent` runs `reopen-agent --dev run` against the isolated `reopen-dev` directories with the fake desktop provider (real adapters arrive in Phase 2). In another terminal: `cargo run -q -p reopen-agent -- --dev status`, `capture`, `history`, or `checkpoint show <id>`. Exit codes: 3 another agent is running, 4 storage is damaged or newer (capture disabled), 5 no agent is running.
+`pnpm dev:agent` runs `reopen-agent --dev run` against the isolated `reopen-dev` directories, capturing GNOME applications (`--provider fake` uses scripted data). For window-level accuracy install the window-list extension with `pnpm gnome-extension:install`, log in again and enable it; without it, running apps are captured and marked as limited visibility. In another terminal: `cargo run -q -p reopen-agent -- --dev status`, `capture`, `history`, or `checkpoint show <id>`. Exit codes: 3 another agent is running, 4 storage is damaged or newer (capture disabled), 5 no agent is running.
 
 ## Working on the project
 

@@ -57,9 +57,18 @@ impl FakeScenario {
     }
 }
 
+/// Which desktop provider captures applications.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ProviderChoice {
+    /// GNOME window list via the extension, with the systemd-unit fallback (ADR-016).
+    Linux,
+    /// Scripted fake data, for development and tests.
+    Fake(FakeScenario),
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct RunOptions {
-    pub scenario: FakeScenario,
+    pub provider: ProviderChoice,
     pub capture_interval: Duration,
 }
 
@@ -144,7 +153,14 @@ pub async fn run(
     let listener = server::bind(&paths.desktop_socket()).map_err(RunError::Io)?;
     tracing::info!(event = "agent.ready");
 
-    let providers: Vec<Arc<dyn CaptureProvider>> = vec![Arc::new(options.scenario.provider())];
+    let providers: Vec<Arc<dyn CaptureProvider>> = match options.provider {
+        ProviderChoice::Linux => vec![Arc::new(
+            reopen_platform_linux::GnomeAppsProvider::from_env(
+                reopen_platform_linux::ExclusionPolicy::default(),
+            ),
+        )],
+        ProviderChoice::Fake(scenario) => vec![Arc::new(scenario.provider())],
+    };
     let engine = Arc::new(CaptureEngine::new(
         providers,
         CapturePolicy::default(),
