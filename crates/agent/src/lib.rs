@@ -10,5 +10,6 @@ pub mod logging;
 pub mod memory;
 pub mod paths;
 pub mod render;
+pub mod restore;
 pub mod run;
 pub mod scheduler;
