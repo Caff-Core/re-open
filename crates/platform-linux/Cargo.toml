@@ -1,0 +1,19 @@
+[package]
+name = "reopen-platform-linux"
+description = "Re-Open Linux platform adapters"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+reopen-core.workspace = true
+reopen-platform.workspace = true
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[lints]
+workspace = true

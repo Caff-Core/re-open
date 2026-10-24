@@ -2976,6 +2976,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "reopen-platform-linux"
+version = "0.1.0"
+dependencies = [
+ "reopen-core",
+ "reopen-platform",
+ "tempfile",
+]
+
+[[package]]
 name = "reopen-protocol"
 version = "0.1.0"
 dependencies = [
