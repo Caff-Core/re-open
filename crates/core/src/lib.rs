@@ -8,12 +8,17 @@ pub mod capability;
 pub mod checkpoint;
 pub mod id;
 pub mod resource;
+pub mod restore;
 pub mod source;
 pub mod time;
 
 pub use capability::{AdapterRef, Capability, CapabilitySet, Unsupported};
 pub use checkpoint::{CaptureReason, Completeness, SourceStatus};
-pub use id::{CheckpointId, ResourceId, SessionId, SourceId, WorkspaceId};
+pub use id::{
+    AttemptId, CheckpointId, ResourceId, RestoreActionId, RestoreRunId, SessionId, SourceId,
+    WorkspaceId,
+};
 pub use resource::{Resource, ResourceKind, ResourcePayload};
+pub use restore::{ActionState, RunState};
 pub use source::{SourceState, UnknownSourceState};
 pub use time::{Clock, Deadline, MonotonicInstant, SystemClock, Timestamp};
