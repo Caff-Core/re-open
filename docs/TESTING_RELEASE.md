@@ -33,6 +33,8 @@ Native validation runs on the development machine: Fedora 44 x86_64, GNOME 50 on
 11. Change exclusions; subsequent capture and queued actions respect them.
 12. Corrupt database or fail a migration; no silent empty-history replacement occurs.
 
+Where these are covered today: cases 1 and 12 in `crates/storage/tests/durability.rs` (25 rounds of `SIGKILL` against a child process committing in a loop, then reopen and integrity checks; a full disk simulated with SQLite's page limit; a write-protected file; a damaged page) and `open_and_migrate.rs` (garbage and zero-byte files, failed and destructive migrations); case 2 in `sessions.rs`; retention in `retention.rs`; process-level startup, singleton lock, clean shutdown and log redaction in `crates/agent/tests/cli.rs`. A full disk is simulated, not produced on a real filesystem.
+
 ## Performance budget
 
 Initial engineering targets, to be measured rather than promised:

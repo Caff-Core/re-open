@@ -202,15 +202,15 @@ Goal: platform-independent agent that captures from fake providers, persists che
 
 ### 1.9 Durability test suite — `test` · [#19](https://github.com/Caff-Core/re-open/issues/19)
 
-- [ ] Kill the agent process at transaction boundaries; prior or new checkpoint survives, never half-written
-- [ ] Repeated restarts keep every pending candidate protected
-- [ ] Full-disk, read-only and corrupt database simulations
-- [ ] Retention and migration tests
+- [x] Kill the agent process at transaction boundaries; prior or new checkpoint survives, never half-written
+- [x] Repeated restarts keep every pending candidate protected
+- [x] Full-disk, read-only and corrupt database simulations
+- [x] Retention and migration tests
 
 ### Phase 1 exit criteria
 
-- [ ] Kill-during-write, previous-session preservation, full-disk/error simulation, retention and migration tests pass
-- [ ] CLI shows complete, partial and stale fixtures honestly
+- [x] Kill-during-write, previous-session preservation, full-disk/error simulation, retention and migration tests pass
+- [x] CLI shows complete, partial and stale fixtures honestly
 - [ ] Phase 1 issues closed
 
 ---

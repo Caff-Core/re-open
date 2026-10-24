@@ -87,6 +87,10 @@ impl Store {
         if check != "ok" {
             return Err(StoreError::Corrupt);
         }
+        // SQLite silently falls back to read-only for a write-protected file.
+        if conn.is_readonly(rusqlite::MAIN_DB)? {
+            return Err(StoreError::ReadOnly);
+        }
 
         conn.busy_timeout(BUSY_TIMEOUT)?;
         conn.pragma_update(None, "foreign_keys", "ON")?;
@@ -124,6 +128,21 @@ impl Store {
     /// The connection, for storage modules in this crate.
     pub(crate) const fn conn(&self) -> &Connection {
         &self.conn
+    }
+
+    /// Fault injection: caps the database at `pages` pages so writes beyond it
+    /// fail as if the disk were full. Pass `None` to remove the cap.
+    ///
+    /// # Errors
+    ///
+    /// Storage errors setting the limit.
+    #[doc(hidden)]
+    pub fn limit_pages_for_testing(&self, pages: Option<u64>) -> Result<(), StoreError> {
+        let limit = pages.map_or(i64::from(u32::MAX - 1), |pages| {
+            i64::try_from(pages).unwrap_or(i64::MAX)
+        });
+        self.conn().pragma_update(None, "max_page_count", limit)?;
+        Ok(())
     }
 
     pub(crate) const fn conn_mut(&mut self) -> &mut Connection {
